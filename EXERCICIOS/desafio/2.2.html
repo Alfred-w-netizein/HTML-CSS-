@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morcegos Interativos</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #0a0a0a;
+            cursor: none;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="swarmCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('swarmCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+        window.addEventListener('mousemove', e => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        // Classe para cada pássaro/morcego
+        class Bird {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.speed = 7 + Math.random() * 2;
+                this.angle = Math.random() * Math.PI * 2;
+                this.size = 10 + Math.random() * 5;
+            }
+
+            update() {
+                // Calcula ângulo em direção ao mouse
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                let moveX = dx / distance * this.speed;
+                let moveY = dy / distance * this.speed;
+
+                this.x += moveX;
+                this.y += moveY;
+
+                // Adiciona pequeno movimento aleatório
+                this.x += (Math.random() - 0.5);
+                this.y += (Math.random() - 0.5);
+            }
+
+            draw(ctx) {
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                // Desenha morcego/pássaro estilizado
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x - this.size, this.y + this.size / 2);
+                ctx.lineTo(this.x - this.size / 2, this.y);
+                ctx.lineTo(this.x - this.size, this.y - this.size / 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
+        // Cria o enxame
+        const birds = [];
+        const totalBirds = 100; // Quantidade de morcegos/pássaros
+        for (let i = 0; i < totalBirds; i++) {
+            birds.push(new Bird());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Atualiza e desenha cada pássaro
+            birds.forEach(bird => {
+                bird.update();
+                bird.draw(ctx);
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // Redimensiona canvas caso a tela mude
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+
+</html>

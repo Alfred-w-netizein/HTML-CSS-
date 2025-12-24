@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Portal Play — Acesso ao Jogo</title>
+<style>
+  :root {
+    --bg:#061022; --card:#07152a; --muted:#9fb0c8; --accent:#60a5fa;
+  }
+  * { box-sizing:border-box; font-family:Inter,system-ui,Segoe UI,Roboto,Arial }
+  body {
+    margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+    padding:20px; background:linear-gradient(180deg,#041025,#071028); color:#eaf2ff;
+  }
+  .card {
+    width:100%; max-width:820px; background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+    padding:22px; border-radius:12px; box-shadow:0 12px 40px rgba(2,6,23,0.6);
+  }
+  header { display:flex; gap:14px; align-items:center; margin-bottom:12px }
+  .logo {
+    width:56px; height:56px; background:linear-gradient(135deg,#06b6d4,#7c3aed);
+    display:grid; place-items:center; border-radius:10px; font-weight:700;
+  }
+  h1 { margin:0; font-size:20px }
+  p.lead { margin:2px 0 0; color:var(--muted); font-size:13px }
+  label { font-size:13px; color:var(--muted); display:block; margin-bottom:6px }
+  input[type="text"], input[type="password"], input[type="number"] {
+    width:100%; padding:10px; border-radius:10px;
+    border:1px solid rgba(255,255,255,0.03);
+    background:rgba(255,255,255,0.02); color:inherit;
+  }
+  .box { background:rgba(255,255,255,0.01); padding:12px; border-radius:10px; margin-top:12px; }
+  .rule { display:flex; gap:10px; align-items:center; padding:8px; border-radius:8px; }
+  .dot { width:12px; height:12px; border-radius:99px; border:2px solid var(--muted); }
+  .dot.ok {
+    background:linear-gradient(180deg,#34d399,#10b981); border:0;
+    box-shadow:0 8px 18px rgba(16,185,129,0.12);
+  }
+  .progress { height:10px; background:rgba(255,255,255,0.03); border-radius:999px; overflow:hidden; margin-top:6px }
+  .bar { height:100%; width:0%; background:linear-gradient(90deg,#60a5fa,#34d399); transition:width .3s }
+  .meta { font-size:13px; color:var(--muted); margin-top:6px; }
+  footer { margin-top:12px; font-size:12px; color:var(--muted); text-align:center }
+</style>
+</head>
+<body>
+  <div class="card">
+    <header>
+      <div class="logo">PLAY</div>
+      <div>
+        <h1>Portal Play</h1>
+        <p class="lead">Preencha as informações para liberar o jogo.</p>
+      </div>
+    </header>
+
+    <div>
+      <label>Nome completo</label>
+      <input id="fullname" type="text" placeholder="Ex.: João Silva" required>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+        <div>
+          <label>Idade</label>
+          <input id="age" type="number" placeholder="Idade">
+        </div>
+        <div>
+          <label>Cidade / Estado</label>
+          <input id="city" type="text" placeholder="Ex.: Belo Horizonte">
+        </div>
+      </div>
+
+      <div style="margin-top:14px">
+        <label>Senha para jogar</label>
+        <input id="pwd" type="password" placeholder="Crie sua senha">
+      </div>
+
+      <div class="box">
+        <div class="rule">
+          <span class="dot" id="dot-current"></span>
+          <div id="ruleText">Digite uma senha com pelo menos 8 caracteres.</div>
+        </div>
+        <div class="progress"><div class="bar" id="bar"></div></div>
+        <div class="meta" id="status"></div>
+      </div>
+    </div>
+
+    <footer>© 2025 Portal Play</footer>
+  </div>
+
+<script>
+const hiddenResult = 2 + 2 * 98; // segredo 😏
+const country = "Brasil";
+
+const rules = [
+  {text:"Senha com pelo menos 8 caracteres", test: p => p.length >= 8},
+  {text:"Conter ao menos um destes símbolos: # @ $ %", test: p => /[#@\$%]/.test(p)},
+  {text:"Conter o resultado de 200-2-100+100,", test: p => p.includes(String(hiddenResult))},
+  {text:"Terminar com o número total de caracteres da própria senha", test: p => p.endsWith(String(p.length))},
+  {text:"Conter a primeira e a última letra do país onde vc está", test: p => p.toLowerCase().includes("bl")},
+  {text:"Conter quantidade de dias em um ano", test: p => p.includes("365")},
+  {text:"um ano bissexto)", test: p => p.includes("366")},
+];
+
+let currentIndex = 0;
+const ruleText = document.getElementById("ruleText");
+const dot = document.getElementById("dot-current");
+const bar = document.getElementById("bar");
+const status = document.getElementById("status");
+const pwd = document.getElementById("pwd");
+
+function updateRuleDisplay() {
+  if (currentIndex >= rules.length) {
+    ruleText.textContent = "Senha invalida, tente novamente mais tarde";
+    dot.classList.add("ok");
+    bar.style.width = "100%";
+    status.textContent = ".";
+    return;
+  }
+  ruleText.textContent = rules[currentIndex].text;
+  dot.classList.remove("ok");
+  status.textContent = `Regra ${currentIndex + 1} de ${rules.length}`;
+  bar.style.width = ((currentIndex / rules.length) * 100) + "%";
+}
+
+pwd.addEventListener("input", () => {
+  const val = pwd.value;
+  if (currentIndex < rules.length && rules[currentIndex].test(val)) {
+    dot.classList.add("ok");
+    setTimeout(() => {
+      currentIndex++;
+      updateRuleDisplay();
+    }, 500);
+  }
+});
+
+updateRuleDisplay();
+</script>
+</body>
+</html>

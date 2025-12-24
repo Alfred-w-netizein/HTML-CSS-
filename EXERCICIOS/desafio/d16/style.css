@@ -1,0 +1,48 @@
+@charset "UTF_8";
+
+@font-face {
+  font-family: 'MinhaFonte';
+  src: url('idroid.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body{background-color: antiquewhite ; font-family: Arial, Helvetica, sans-serif; 
+}
+
+
+picture > source > img{width:100%}
+
+div.centro{margin:auto; text-align: center;}
+
+main{background-color: white; margin: 3% 10% 5% 10%; padding: 2% 2% 2% 2%; border-radius: 0px 0px 15px 15px; box-shadow: 8px 5px 8px rgb(12, 12, 12);margin-top: 0%;}
+
+header{background-image:linear-gradient(to bottom, green, rgb(1, 71, 1) ,rgb(0, 35, 0));
+margin: -9px;
+margin-right:-10px;
+padding-bottom:0px;
+width: 100%;
+padding-top: 7px;
+box-shadow: 0px 10px 10px rgb(12, 12, 12);
+}
+h1{text-align: center; color: rgb(247, 245, 245); text-shadow: 2px 2px 5px rgb(18, 18, 18);}
+
+header > h3#title{text-align:  center; color: white; font-size: 20px; margin-top: 0px; padding-top: 0px; font-size: small;}
+
+h2.ab{font-family: 'MinhaFonte', Arial, sans-serif; font-size: 25px; text-align: 20px; color: rgb(2, 106, 126); margin-top: 0px; padding-top: 0px; background-color: rgb(12, 212, 75) ;}
+
+li{background-color: rgb(3, 60, 10) ; color: white; border-radius:4px;
+margin-right: 5px; display: inline-block; padding: 7px; text-decoration: none; text-align: auto; border:1px solid black;}
+li:hover{background-color: rgb(1, 25, 30); color: white; cursor: pointer; box-shadow: 2px 2px 2px rgb(24, 23, 23); transition-duration: 0.5s; transition-property: inherit;}
+
+ 
+
+ picture{margin: auto; text-align: center;}
+
+ div.video{padding: 20px; padding-bottom: 60%;position:relative; margin:0px -20px -10px -20px;}
+
+ div.video > iframe{position:absolute;
+top:5%; left:5%;
+width:90%; height:90%; border-radius: 15px; box-shadow: 2px 2px 2px rgb(24, 23, 23);
+
+}

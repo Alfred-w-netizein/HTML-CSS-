@@ -1,0 +1,24 @@
+@charset "UTF-8";
+body{background-image:linear-gradient(to left, rgb(2, 82, 2), rgb(0, 0, 0));
+
+
+font:normal 16px Arial, sans-serif;
+color:rgb(255, 255, 254)
+}
+hr{border:2px solid rgb(255, 255, 254);
+   border-radius: 10px;
+}
+h1{color:rgb(245, 245, 246); text-align:justify; margin:20px
+}
+h1#principal{color:rgb(255, 255, 254); text-align:center; font-size: 40px; background-color:rgb(2, 37, 2); padding: 5px;border-radius: 10px; box-shadow: 8px 5px 8px rgb(10, 71, 2);
+}
+h2{color:rgb(6, 11, 17); text-align:auto; margin:auto;
+}
+h2.basico{color:rgb(255, 255, 254); text-align:left; font-size: 30px; background-color:rgb(4, 143, 4); border-radius: 4px;
+}
+h2.intermediario{color:rgb(255, 255, 254); text-align:left; font-size: 30px; background-color:rgb(3, 75, 3); border-radius: 4px;
+}
+h2.avancado{color:rgb(255, 255, 254); text-align:left; font-size: 30px; background-color:rgb(2, 31, 2);border-radius: 4px;
+}
+p{text-align: justify;
+text-indent: 20px;}

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cordel Moderno</title>
+
+  <style>
+    /* Importando uma fonte que tem uma pegada de cordel/moderno */
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;700&family=Roboto:wght@300;500&display=swap');
+
+    /* Reset básico e fonte padrão */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Crimson Text', serif;
+      background-color: blanchedalmond;
+      color: rgb(9, 9, 9);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      background-color: black;
+      color: bisque;
+      padding: 2rem 1rem;
+      text-shadow: 1px 1px 5px rgba(255, 255, 255, 0.2);
+    }
+
+    header h1 {
+      font-size: 2.8em;
+      letter-spacing: 2px;
+    }
+
+    header h2 {
+      font-size: 1.4em;
+      font-weight: 400;
+      
+    }
+     header h2:hover {
+ 
+  color: rgb(175, 173, 173);
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+    
+    main {
+      width: 80%;
+      max-width: 900px;
+      
+      
+   
+     
+    }
+
+    p {
+      font-size: 2em;
+      margin-bottom: 1.8rem;
+      margin-top: 1.8rem;
+      width: 40%;
+      margin: 1.8rem;
+    }
+
+    #es {
+      background-color: rgba(0, 0, 0, 0.55);
+      color: blanchedalmond;
+      padding: 1.2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      width: 40%;
+    }
+
+    /* Efeito parallax — cada bloco cobre 100% da viewport no eixo X e Y */
+    div.paralax1, div.paralax2 {
+      height: 80vh;
+      width: 100vw;
+      background-position: center center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      display: flex;
+      align-items: center;
+      justify-content: left;
+      
+
+    }
+
+    div.paralax1 {
+      background-image: url('campo.jpeg');
+    }
+
+    div.paralax2 {
+      background-image: url('pages.jpg');
+    }
+
+    footer {
+      background-color: black;
+      color: blanchedalmond;
+      text-align: center;
+      padding: 1rem;
+      font-size: 1.1em;
+      letter-spacing: 1px;
+    }
+
+    /* Pequeno toque de animação pra entrada suave */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    main, .paralax1, .paralax2, header, footer {
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      main {
+        width: 90%;
+        padding: 1rem;
+      }
+      p {
+        font-size: 1.2em;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>CORDEL MODERNO</h1>
+    <h2>Por <strong>Milton Duarte</strong></h2>
+  </header>
+
+  <main>
+    <p>
+      Estou ficando cansado
+      Da tal tecnologia
+      Só se fala por e-mail
+      Mensagem curta e fria
+      Twitter e Facebook
+      Antes que eu caduque
+      Vou dizer tudo em poesia.
+    </p>
+
+    <div class="paralax1">
+      <p id="es">
+        Não é mais como era antes
+        É tudo abreviado
+        "Você" só tem duas letras
+        O "O" e o "E" foi riscado
+        Para declarar o amor
+        Basta botar uma flor
+        E um coração desenhado.
+      </p>
+    </div>
+
+    <p>
+      Arroba agora não pesa
+      É parte de um endereço
+      Ponto final nem se usa
+      Ou vai até no começo
+      Agora é .com
+      Se o site é muito bom
+      Ele vale um alto preço.
+    </p>
+
+    <p>
+      Pra piorar a linguagem
+      O emoticon é um risco
+      Tem símbolo para tudo
+      Ponto e vírgula e um asterisco
+      Um beijo significa
+      Pra entender como fica
+      Decifre esse rabisco.
+    </p>
+
+    <div class="paralax2">
+      <p id="es">
+        Tenho saudade das cartas
+        Escritas com a própria mão
+        Mandava no mês de Junho
+        Só chegava no Verão
+        Mas matava a saudade
+        Era texto de verdade
+        Nas linhas do coração.
+      </p>
+    </div>
+
+    <p>
+      Agora, escrevo e envio
+      Chegando na mesma hora
+      Mas quando vou prosear
+      A pessoa foi embora
+      Abriu outro aplicativo
+      O mundo ficou cativo
+      Da tecnologia do agora.
+    </p>
+
+    <p>
+      Felizmente, pra orar
+      Não precisa de internet
+      Deus escuta todo mundo
+      Se quiser, faça esse teste
+      Dois pontos são dois joelhos
+      Seus lábios são aparelhos
+      Deixe que Deus interprete.
+    </p>
+  </main>
+
+  <footer>
+    <h3>criado por Alfred</h3>
+  </footer>
+</body>
+</html>

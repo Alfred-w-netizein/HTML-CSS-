@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragão de Energia</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: radial-gradient(circle at center, #000814 0%, #00040a 100%);
+            overflow: hidden;
+            cursor: none;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="dragao"></canvas>
+
+    <script>
+        // ⚡ Configurações do Canvas
+        const canvas = document.getElementById("dragao");
+        const ctx = canvas.getContext("2d");
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+
+        // 🐉 Parâmetros do dragão
+        const numSegments = 50;
+        const trail = 0.25;
+        const segments = [];
+        let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+
+        // Inicializa o corpo
+        for (let i = 0; i < numSegments; i++) {
+            segments.push({ x: mouse.x, y: mouse.y });
+        }
+
+        // Posição do mouse
+        document.addEventListener("mousemove", (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        // Função de desenho do dragão
+        function drawDragon() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Atualiza posições
+            let prev = { x: mouse.x, y: mouse.y };
+            for (let i = 0; i < numSegments; i++) {
+                const seg = segments[i];
+                seg.x += (prev.x - seg.x) * trail;
+                seg.y += (prev.y - seg.y) * trail;
+                prev = { x: seg.x, y: seg.y };
+            }
+
+            // 🌀 Corpo em forma de energia
+            for (let i = numSegments - 1; i > 0; i--) {
+                const size = 16 * (1 - i / numSegments);
+                const alpha = 1 - i / numSegments;
+                ctx.beginPath();
+                ctx.fillStyle = `rgba(0, 150, 255, ${alpha})`;
+                ctx.shadowColor = "#00ccff";
+                ctx.shadowBlur = 20;
+                ctx.arc(segments[i].x, segments[i].y, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // ⚔️ Cabeça do dragão
+            const head = segments[0];
+            ctx.beginPath();
+            const gradient = ctx.createRadialGradient(head.x, head.y, 2, head.x, head.y, 20);
+            gradient.addColorStop(0, "#00eaff");
+            gradient.addColorStop(1, "#0077ff");
+            ctx.fillStyle = gradient;
+            ctx.shadowColor = "#00eaff";
+            ctx.shadowBlur = 40;
+            ctx.arc(head.x, head.y, 16, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Olhos de energia
+            ctx.beginPath();
+            ctx.fillStyle = "#fff";
+            ctx.arc(head.x + 6, head.y - 3, 2, 0, Math.PI * 2);
+            ctx.arc(head.x + 6, head.y + 3, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            requestAnimationFrame(drawDragon);
+        }
+
+        drawDragon();
+
+        // Ajusta tamanho se a tela mudar
+        window.addEventListener("resize", () => {
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+        });
+    </script>
+</body>
+
+</html>
