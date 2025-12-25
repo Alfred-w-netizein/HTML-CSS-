@@ -1,0 +1,6 @@
+{
+    "editor.formatOnSave": true,
+    "files.autoSave": "onFocusChange",
+    "workbench.preferredDarkColorTheme": "Monokai Dimmed",
+    "workbench.colorTheme": "Monokai"
+}

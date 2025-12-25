@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>formulsrios</title>
+    <title>Formularios</title>
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif;
@@ -26,28 +26,24 @@
 
         }
 
-        div {
-            margin-bottom: 10px;
-            padding: 10px;
+        p.sub {
+
+            background-color: orangered;
+            width: 30px;
         }
     </style>
 </head>
 
 <body>
-    <h1>Teste de formularios</h1>
+    <h1>Primeiro formulario</h1>
+    <form>
+        <label for="inome">
+            <p>Nome: <input type="text" name="nome" id="inome"></p>
+        </label>
 
-    <form action="cadastro.php" method="get">
-        <div>
-            <label for="iuser">Usuario:</label>
-            <input type="text" name="user" id="iuser" required>
-        </div>
-        <div></div>
-        <label for="ipassword">Senha:</label>
-        <input type="password" name="password" id="ipassword" required>
-        </div>
-        <div>
-            <button type="submit">Cadastrar</button>
-        </div>
+        <p>sobrenome: <input type="text" name="sobrenome" id="sobrenome"></p>
+
+        <p class="sub"><input type="submit" value="Enviar"></p>
     </form>
 </body>
 
