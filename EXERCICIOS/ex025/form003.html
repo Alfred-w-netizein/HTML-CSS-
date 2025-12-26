@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login • Contato</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, rgb(0, 2, 22), rgb(0, 5, 58));
+            color: #fff;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+        }
+
+        .campo {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            background-color: #f0f8ff;
+            box-shadow: 0 0 0 2px #4da6ff;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            background: #4da6ff;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #1e90ff;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <form class="container" action="cadastro.php" method="get">
+        <h1>Contato</h1>
+
+        <div class="campo">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+        </div>
+
+        <div class="campo">
+            <label for="telefone">Telefone</label>
+            <input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000" required>
+        </div>
+
+        <button type="submit">Enviar</button>
+    </form>
+
+</body>
+
+</html>
