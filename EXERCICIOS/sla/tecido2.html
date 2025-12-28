@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Simulação de Tecido (Massa-Mola)</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: radial-gradient(#111, #000);
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+
+        const GRAVITY = 0.5;
+        const FRICTION = 0.999;
+        const WIND_STRENGTH = 0.05;
+        const TEAR_THRESHOLD = 35;
+
+        let mouse = {
+            x: 0,
+            y: 0,
+            px: 0,
+            py: 0,
+            down: false
+        };
+
+        class Point {
+            constructor(x, y, pinned = false) {
+                this.x = x;
+                this.y = y;
+                this.oldx = x;
+                this.oldy = y;
+                this.pinned = pinned;
+                this.constraints = [];
+            }
+
+            update() {
+                if (this.pinned) return;
+
+                let vx = (this.x - this.oldx) * FRICTION;
+                let vy = (this.y - this.oldy) * FRICTION;
+
+                this.oldx = this.x;
+                this.oldy = this.y;
+
+                this.x += vx;
+                this.y += vy + GRAVITY;
+
+                // vento do mouse
+                if (mouse.down) {
+                    const dx = this.x - mouse.x;
+                    const dy = this.y - mouse.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 120) {
+                        this.x += (mouse.x - mouse.px) * WIND_STRENGTH;
+                    }
+                }
+            }
+
+            draw() {
+                ctx.fillRect(this.x, this.y, 2, 2);
+            }
+        }
+
+        class Constraint {
+            constructor(p1, p2, length) {
+                this.p1 = p1;
+                this.p2 = p2;
+                this.length = length;
+            }
+
+            solve() {
+                const dx = this.p2.x - this.p1.x;
+                const dy = this.p2.y - this.p1.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist > TEAR_THRESHOLD) {
+                    this.p1.constraints = this.p1.constraints.filter(c => c !== this);
+                    return;
+                }
+
+                const diff = (this.length - dist) / dist * 0.5;
+
+                if (!this.p1.pinned) {
+                    this.p1.x -= dx * diff;
+                    this.p1.y -= dy * diff;
+                }
+                if (!this.p2.pinned) {
+                    this.p2.x += dx * diff;
+                    this.p2.y += dy * diff;
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.moveTo(this.p1.x, this.p1.y);
+                ctx.lineTo(this.p2.x, this.p2.y);
+                ctx.stroke();
+            }
+        }
+
+        // criar tecido
+        const points = [];
+        const spacing = 15;
+        const cols = 40;
+        const rows = 30;
+        const startX = canvas.width / 2 - cols * spacing / 2;
+        const startY = 40;
+
+        for (let y = 0; y < rows; y++) {
+            for (let x = 0; x < cols; x++) {
+                const p = new Point(
+                    startX + x * spacing,
+                    startY + y * spacing,
+                    y === 0
+                );
+                points.push(p);
+            }
+        }
+
+        // criar molas
+        points.forEach((p, i) => {
+            if (i % cols !== 0) {
+                const left = points[i - 1];
+                const c = new Constraint(p, left, spacing);
+                p.constraints.push(c);
+            }
+            if (i >= cols) {
+                const top = points[i - cols];
+                const c = new Constraint(p, top, spacing);
+                p.constraints.push(c);
+            }
+        });
+
+        function update() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = "#0ff";
+            ctx.fillStyle = "#0ff";
+
+            for (let i = 0; i < points.length; i++) {
+                points[i].update();
+            }
+
+            for (let k = 0; k < 5; k++) {
+                for (let i = 0; i < points.length; i++) {
+                    points[i].constraints.forEach(c => c.solve());
+                }
+            }
+
+            points.forEach(p => {
+                p.constraints.forEach(c => c.draw());
+            });
+
+            requestAnimationFrame(update);
+        }
+
+        update();
+
+        // mouse
+        canvas.addEventListener("mousedown", e => {
+            mouse.down = true;
+            mouse.x = mouse.px = e.clientX;
+            mouse.y = mouse.py = e.clientY;
+        });
+
+        canvas.addEventListener("mousemove", e => {
+            mouse.px = mouse.x;
+            mouse.py = mouse.y;
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        canvas.addEventListener("mouseup", () => mouse.down = false);
+    </script>
+
+</body>
+
+</html>

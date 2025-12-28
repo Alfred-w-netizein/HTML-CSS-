@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulação de Tecido - Massa-Mola</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #87CEEB, #98FB98);
+            font-family: Arial, sans-serif;
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+
+        #info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+            backdrop-filter: blur(10px);
+        }
+
+        #info h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        #info p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="c"></canvas>
+    <div id="info">
+        <h3>🧵 Simulação de Tecido</h3>
+        <p>• Mova o <strong>mouse</strong> para simular vento<br>
+            • <strong>Clique esquerdo + arraste</strong> para empurrar<br>
+            • <strong>Botão direito + arraste rápido</strong> para rasgar<br>
+            • Gravidade sempre ativa</p>
+    </div>
+
+    <script>
+        // Configurações do tecido [web:15]
+        var physics_accuracy = 6,
+            mouse_influence = 25,
+            mouse_cut = 8,
+            gravity = 1200,
+            cloth_height = 25,
+            cloth_width = 40,
+            start_y = 50,
+            spacing = 9,
+            tear_distance = 65;
+
+        // Polyfill para animação suave
+        window.requestAnimFrame = window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            function (callback) { window.setTimeout(callback, 1000 / 60); };
+
+        var canvas, ctx, cloth, boundsx, boundsy,
+            mouse = { down: false, button: 1, x: 0, y: 0, px: 0, py: 0 };
+
+        // Classe Ponto (massa) [web:15]
+        function Point(x, y) {
+            this.x = x; this.y = y;
+            this.px = x; this.py = y;
+            this.vx = 0; this.vy = 0;
+            this.pin_x = null; this.pin_y = null;
+            this.constraints = [];
+        }
+
+        Point.prototype.update = function (delta) {
+            if (mouse.down) {
+                var diff_x = this.x - mouse.x, diff_y = this.y - mouse.y,
+                    dist = Math.sqrt(diff_x * diff_x + diff_y * diff_y);
+
+                if (mouse.button == 1) {
+                    if (dist < mouse_influence) {
+                        this.px = this.x - (mouse.x - mouse.px) * 1.8;
+                        this.py = this.y - (mouse.y - mouse.py) * 1.8;
+                    }
+                } else if (dist < mouse_cut) {
+                    this.constraints = [];
+                }
+            }
+
+            this.add_force(0, gravity);
+            delta *= delta;
+            var nx = this.x + ((this.x - this.px) * 0.99) + (this.vx / 2 * delta),
+                ny = this.y + ((this.y - this.py) * 0.99) + (this.vy / 2 * delta);
+
+            this.px = this.x; this.py = this.y;
+            this.x = nx; this.y = ny;
+            this.vx = this.vy = 0;
+        };
+
+        Point.prototype.draw = function () {
+            if (!this.constraints.length) return;
+            var i = this.constraints.length;
+            while (i--) this.constraints[i].draw();
+        };
+
+        Point.prototype.resolve_constraints = function () {
+            if (this.pin_x != null && this.pin_y != null) {
+                this.x = this.pin_x; this.y = this.pin_y; return;
+            }
+
+            var i = this.constraints.length;
+            while (i--) this.constraints[i].resolve();
+
+            // Colisão com bordas
+            if (this.x > boundsx) this.x = 2 * boundsx - this.x;
+            else if (this.x < 1) this.x = 2 - this.x;
+            if (this.y < 1) this.y = 2 - this.y;
+            else if (this.y > boundsy) this.y = 2 * boundsy - this.y;
+        };
+
+        Point.prototype.attach = function (point) {
+            this.constraints.push(new Constraint(this, point));
+        };
+
+        Point.prototype.remove_constraint = function (lnk) {
+            var i = this.constraints.length;
+            while (i--) if (this.constraints[i] == lnk) this.constraints.splice(i, 1);
+        };
+
+        Point.prototype.add_force = function (x, y) {
+            this.vx += x; this.vy += y;
+        };
+
+        Point.prototype.pin = function (pinx, piny) {
+            this.pin_x = pinx; this.pin_y = piny;
+        };
+
+        // Classe Restrição (mola) [web:15]
+        function Constraint(p1, p2) {
+            this.p1 = p1; this.p2 = p2;
+            this.length = spacing;
+        }
+
+        Constraint.prototype.resolve = function () {
+            var diff_x = this.p1.x - this.p2.x,
+                diff_y = this.p1.y - this.p2.y,
+                dist = Math.sqrt(diff_x * diff_x + diff_y * diff_y),
+                diff = (this.length - dist) / dist;
+
+            if (dist > tear_distance) {
+                this.p1.remove_constraint(this);
+                return;
+            }
+
+            var px = diff_x * diff * 0.5,
+                py = diff_y * diff * 0.5;
+            this.p1.x += px; this.p1.y += py;
+            this.p2.x -= px; this.p2.y -= py;
+        };
+
+        Constraint.prototype.draw = function () {
+            ctx.moveTo(this.p1.x, this.p1.y);
+            ctx.lineTo(this.p2.x, this.p2.y);
+        };
+
+        // Classe Tecido [web:15]
+        function Cloth() {
+            this.points = [];
+            var start_x = canvas.width / 2 - cloth_width * spacing / 2;
+
+            for (var y = 0; y <= cloth_height; y++) {
+                for (var x = 0; x <= cloth_width; x++) {
+                    var p = new Point(start_x + x * spacing, start_y + y * spacing);
+
+                    if (y == 0) p.pin(p.x, p.y); // Fixa topo
+                    if (y != 0) p.attach(this.points[x + (y - 1) * (cloth_width + 1)]);
+                    if (x != 0) p.attach(this.points[this.points.length - 1]);
+
+                    this.points.push(p);
+                }
+            }
+        }
+
+        Cloth.prototype.update = function () {
+            var i = physics_accuracy;
+            while (i--) {
+                var p = this.points.length;
+                while (p--) this.points[p].resolve_constraints();
+            }
+            i = this.points.length;
+            while (i--) this.points[i].update(0.016);
+        };
+
+        Cloth.prototype.draw = function () {
+            ctx.beginPath();
+            var i = this.points.length;
+            while (i--) this.points[i].draw();
+            ctx.lineWidth = 1.2;
+            ctx.strokeStyle = 'rgba(139, 69, 19, 0.8)'; // Cor marrom tecido
+            ctx.stroke();
+
+            // Adiciona sombreamento para efeito 3D
+            ctx.shadowColor = 'rgba(0,0,0,0.3)';
+            ctx.shadowBlur = 8;
+            ctx.shadowOffsetY = 2;
+            ctx.stroke();
+            ctx.shadowColor = 'transparent';
+        };
+
+        // Loop principal de animação
+        function update() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Gradiente de fundo dinâmico
+            var gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#87CEEB');
+            gradient.addColorStop(1, '#98FB98');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            cloth.update();
+            cloth.draw();
+            requestAnimFrame(update);
+        }
+
+        // Inicialização
+        window.onload = function () {
+            canvas = document.getElementById('c');
+            ctx = canvas.getContext('2d');
+            canvas.width = Math.min(window.innerWidth * 0.9, 800);
+            canvas.height = Math.min(window.innerHeight * 0.8, 500);
+
+            // Eventos do mouse
+            canvas.onmousedown = function (e) {
+                mouse.button = e.which;
+                mouse.px = mouse.x; mouse.py = mouse.y;
+                var rect = canvas.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+                mouse.down = true;
+                e.preventDefault();
+            };
+
+            canvas.onmouseup = function (e) {
+                mouse.down = false;
+                e.preventDefault();
+            };
+
+            canvas.onmousemove = function (e) {
+                mouse.px = mouse.x; mouse.py = mouse.y;
+                var rect = canvas.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left;
+                mouse.y = e.clientY - rect.top;
+                e.preventDefault();
+            };
+
+            canvas.oncontextmenu = function (e) {
+                e.preventDefault();
+            };
+
+            boundsx = canvas.width - 1;
+            boundsy = canvas.height - 1;
+            cloth = new Cloth();
+            update();
+        };
+
+        // Responsivo
+        window.onresize = function () {
+            canvas.width = Math.min(window.innerWidth * 0.9, 800);
+            canvas.height = Math.min(window.innerHeight * 0.8, 500);
+            boundsx = canvas.width - 1;
+            boundsy = canvas.height - 1;
+        };
+    </script>
+</body>
+
+</html>
