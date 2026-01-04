@@ -3,66 +3,931 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tente conseguir</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gestão de Pedidos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
     <style>
+        /* Estilos anteriores mantidos... */
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4fc3a1;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --gray-color: #e9ecef;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
-            background: rgb(0, 16, 2);
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+            padding: 15px;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            /* Espaço para o menu mobile */
+        }
+
+        /* Melhorias específicas para mobile */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+                padding-bottom: 70px;
+            }
+
+            .container {
+                padding: 0 5px;
+            }
+
+            .card {
+                padding: 20px 15px;
+                margin-bottom: 15px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 15px;
+                font-size: 1.1rem;
+            }
+
+            input,
+            textarea {
+                font-size: 16px;
+                /* Evita zoom automático no iOS */
+                padding: 15px;
+            }
+
+            .history-item {
+                padding: 15px;
+            }
+
+            .history-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }
+
+        /* Menu flutuante para mobile */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .mobile-menu-content {
+            display: flex;
+            justify-content: space-around;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .mobile-menu-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 15px;
+            background: none;
+            border: none;
+            color: var(--dark-color);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .mobile-menu-btn i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .mobile-menu-btn.active {
+            color: var(--accent-color);
+        }
+
+        .mobile-menu-btn.active i {
+            color: var(--accent-color);
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu {
+                display: block;
+            }
+
+            .desktop-only {
+                display: none;
+            }
+        }
+
+        /* Animações para mobile */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Melhorias de toque */
+        .btn,
+        .mobile-menu-btn,
+        .clear-btn {
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .btn:active,
+        .mobile-menu-btn:active,
+        .clear-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Scroll suave */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Mensagem de instalação PWA */
+        .install-prompt {
+            position: fixed;
+            bottom: 70px;
+            left: 10px;
+            right: 10px;
+            background: var(--primary-color);
             color: white;
-            font-family: sans-serif;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 999;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .install-prompt-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .install-btn {
+            background: white;
+            color: var(--primary-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-install {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        /* Resto dos estilos anteriores mantidos... */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
             text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
         }
 
-        a {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 50px;
-            height: 50px;
-            background: blue;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: transform 0.2s, background-color 0.2s;
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
         }
 
-        a:hover {
-            background: red;
-            transform: translate(calc(-50% + 120px),
-                    calc(-50% - 80px));
+        .subtitle {
+            color: #666;
+            font-size: 1rem;
         }
 
-        .bola {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background: blue;
-            border: 3PX solid white;
-            border-radius: 50%;
-            transition: 0.2s;
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--gray-color);
+            font-size: 1.2rem;
+        }
+
+        .card-title i {
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #3db08f;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 12px;
+            background-color: var(--gray-color);
+            border-radius: var(--border-radius);
+        }
+
+        .user-info i {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 30px 15px;
+            color: #777;
+        }
+
+        .empty-history i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #ccc;
+        }
+
+        .history-item {
+            padding: 15px;
+            margin-bottom: 12px;
+            background-color: var(--light-color);
+            border-radius: var(--border-radius);
+            border-left: 5px solid var(--accent-color);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .house-info {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .owner-info {
+            color: var(--primary-color);
+            font-style: italic;
+        }
+
+        .history-date {
+            color: #777;
+            font-size: 0.85rem;
+        }
+
+        .history-content {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #ddd;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+            display: none;
+        }
+
+        .history-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
+        }
+
+        .clear-btn {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: none;
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+
+        .clear-btn:hover {
+            background-color: #f1b0b7;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.85rem;
+            padding: 15px;
         }
     </style>
 </head>
 
 <body>
-    <h1>Aperte a bolinha azul!!</h1>
-    <a href="#" class="bola"></a>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-home"></i> Gestão de Pedidos</h1>
+            <p class="subtitle">Registre e consulte pedidos - Otimizado para mobile</p>
+        </header>
+
+        <div class="app-container">
+            <!-- Formulário de Cadastro -->
+            <div id="form-section">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-edit"></i> Novo Pedido</h2>
+
+                    <div class="user-info">
+                        <i class="fas fa-user"></i>
+                        <div>
+                            <strong>Usuário:</strong>
+                            <span id="current-user">Não identificado</span>
+                        </div>
+                    </div>
+
+                    <form id="request-form">
+                        <div class="form-group">
+                            <label for="house-number"><i class="fas fa-hashtag"></i> Número da Casa</label>
+                            <input type="text" id="house-number" placeholder="Ex: 123, 45A, 102-B">
+                            <div class="error" id="house-number-error">Por favor, insira o número da casa.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="house-owner"><i class="fas fa-user-tie"></i> Proprietário</label>
+                            <input type="text" id="house-owner" placeholder="Nome do proprietário">
+                            <div class="error" id="house-owner-error">Por favor, insira o nome do proprietário.</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="request-details"><i class="fas fa-clipboard-list"></i> Pedido</label>
+                            <textarea id="request-details" placeholder="Descreva o pedido em detalhes..."></textarea>
+                            <div class="error" id="request-details-error">Por favor, descreva o pedido.</div>
+                        </div>
+
+                        <button type="submit" class="btn"><i class="fas fa-save"></i> Salvar Pedido</button>
+                    </form>
+
+                    <div class="success-message" id="success-message">
+                        Pedido salvo com sucesso!
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-sign-in-alt"></i> Identificação</h2>
+                    <div class="form-group">
+                        <label for="user-name"><i class="fas fa-id-card"></i> Seu Nome</label>
+                        <input type="text" id="user-name" placeholder="Digite seu nome">
+                        <div class="error" id="user-name-error">Por favor, insira seu nome.</div>
+                    </div>
+                    <button class="btn" id="user-login-btn"><i class="fas fa-sign-in-alt"></i> Acessar
+                        Histórico</button>
+                </div>
+            </div>
+
+            <!-- Histórico de Pedidos -->
+            <div id="history-section">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-history"></i> Histórico de Pedidos</h2>
+
+                    <div id="history-container">
+                        <div class="empty-history" id="empty-history">
+                            <i class="fas fa-clipboard"></i>
+                            <h3>Nenhum pedido registrado</h3>
+                            <p>Faça login e registre seu primeiro pedido</p>
+                        </div>
+
+                        <div id="history-list"></div>
+
+                        <div class="history-actions" id="history-actions" style="display: none;">
+                            <button class="clear-btn" id="clear-history-btn">
+                                <i class="fas fa-trash-alt"></i> Limpar Histórico
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card desktop-only">
+                    <h2 class="card-title"><i class="fas fa-info-circle"></i> Como Funciona</h2>
+                    <ul style="padding-left: 20px;">
+                        <li style="margin-bottom: 10px;">Digite seu nome e clique em "Acessar Histórico"</li>
+                        <li style="margin-bottom: 10px;">Preencha todos os campos do formulário</li>
+                        <li style="margin-bottom: 10px;">Dados são armazenados localmente</li>
+                        <li>Para limpar o histórico, clique em "Limpar Histórico"</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu flutuante para mobile -->
+        <div class="mobile-menu">
+            <div class="mobile-menu-content">
+                <button class="mobile-menu-btn active" data-target="form-section">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Novo Pedido</span>
+                </button>
+                <button class="mobile-menu-btn" data-target="history-section">
+                    <i class="fas fa-history"></i>
+                    <span>Histórico</span>
+                </button>
+                <button class="mobile-menu-btn" id="mobile-user-btn">
+                    <i class="fas fa-user"></i>
+                    <span>Usuário</span>
+                </button>
+                <button class="mobile-menu-btn" id="mobile-info-btn">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Ajuda</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Prompt de instalação PWA -->
+        <div class="install-prompt" id="install-prompt">
+            <div class="install-prompt-content">
+                <div>
+                    <strong>Instalar App</strong>
+                    <p style="font-size: 0.9rem; margin-top: 5px;">Use offline e acesso rápido</p>
+                </div>
+                <div>
+                    <button class="install-btn" id="install-app-btn">Instalar</button>
+                    <button class="close-install" id="close-install-btn">&times;</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Sistema de Gestão de Pedidos &copy; 2023 - Otimizado para mobile</p>
+        </footer>
+    </div>
+
     <script>
-        const bola = document.querySelector('.bola');
+        // Elementos DOM
+        const requestForm = document.getElementById('request-form');
+        const userLoginBtn = document.getElementById('user-login-btn');
+        const historyList = document.getElementById('history-list');
+        const emptyHistory = document.getElementById('empty-history');
+        const historyActions = document.getElementById('history-actions');
+        const clearHistoryBtn = document.getElementById('clear-history-btn');
+        const currentUserSpan = document.getElementById('current-user');
+        const successMessage = document.getElementById('success-message');
+        const installPrompt = document.getElementById('install-prompt');
+        const installAppBtn = document.getElementById('install-app-btn');
+        const closeInstallBtn = document.getElementById('close-install-btn');
+        const mobileMenuBtns = document.querySelectorAll('.mobile-menu-btn');
+        const mobileUserBtn = document.getElementById('mobile-user-btn');
+        const mobileInfoBtn = document.getElementById('mobile-info-btn');
 
-        bola.addEventListener('mouseover', () => {
-            const largura = window.innerWidth - 30;
-            const altura = window.innerHeight - 30;
+        // Variáveis globais
+        let currentUser = localStorage.getItem('currentUser') || '';
+        let requests = JSON.parse(localStorage.getItem('userRequests') || '{}');
+        let deferredPrompt = null;
 
-            const x = Math.random() * largura;
-            const y = Math.random() * altura;
+        // Inicializar a aplicação
+        document.addEventListener('DOMContentLoaded', function () {
+            // Verificar se é mobile
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-            bola.style.left = x + 'px';
-            bola.style.top = y + 'px';
+            if (isMobile) {
+                console.log('Dispositivo móvel detectado');
+                // Configurar comportamento específico para mobile
+                setupMobileFeatures();
+            }
+
+            // Se já houver um usuário salvo, carregar seus dados
+            if (currentUser) {
+                currentUserSpan.textContent = currentUser;
+                loadUserHistory(currentUser);
+            }
+
+            // Configurar eventos
+            requestForm.addEventListener('submit', saveRequest);
+            userLoginBtn.addEventListener('click', loginUser);
+            clearHistoryBtn.addEventListener('click', clearHistory);
+
+            // Eventos para menu mobile
+            mobileMenuBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const target = this.getAttribute('data-target');
+                    if (target) {
+                        scrollToSection(target);
+                        setActiveMenuButton(this);
+                    }
+                });
+            });
+
+            mobileUserBtn.addEventListener('click', function () {
+                document.getElementById('user-name').focus();
+                scrollToSection('form-section');
+                setActiveMenuButton(this);
+            });
+
+            mobileInfoBtn.addEventListener('click', showMobileInfo);
+
+            // Eventos para instalação PWA
+            installAppBtn.addEventListener('click', installApp);
+            closeInstallBtn.addEventListener('click', () => {
+                installPrompt.style.display = 'none';
+                localStorage.setItem('installPromptClosed', 'true');
+            });
+
+            // Detectar evento de instalação PWA
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+
+                // Mostrar prompt após 5 segundos (apenas se não foi fechado antes)
+                if (!localStorage.getItem('installPromptClosed')) {
+                    setTimeout(() => {
+                        installPrompt.style.display = 'block';
+                    }, 5000);
+                }
+            });
+
+            // Verificar se já está instalado
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                console.log('Aplicativo já instalado');
+            }
+        });
+
+        // Configurar recursos específicos para mobile
+        function setupMobileFeatures() {
+            // Focar automaticamente no campo do usuário se não estiver logado
+            if (!currentUser) {
+                setTimeout(() => {
+                    const userNameInput = document.getElementById('user-name');
+                    userNameInput.focus();
+                }, 500);
+            }
+
+            // Adicionar comportamento de "pull to refresh" prevenção
+            let touchStartY = 0;
+
+            document.addEventListener('touchstart', e => {
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+
+            document.addEventListener('touchmove', e => {
+                const touchY = e.touches[0].clientY;
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+                // Prevenir pull-to-refresh quando no topo da página
+                if (scrollTop === 0 && touchY > touchStartY) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            // Melhorar experiência de teclado virtual
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function () {
+                    setTimeout(() => {
+                        this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 300);
+                });
+            });
+        }
+
+        // Função para rolar para uma seção específica
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Função para definir botão ativo no menu mobile
+        function setActiveMenuButton(activeBtn) {
+            mobileMenuBtns.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            activeBtn.classList.add('active');
+        }
+
+        // Função para mostrar informações no mobile
+        function showMobileInfo() {
+            alert('📱 SISTEMA MOBILE\n\n1. Digite seu nome para acessar\n2. Preencha o formulário para registrar pedidos\n3. Veja seu histórico na aba "Histórico"\n\nTodos os dados são salvos localmente no seu dispositivo.');
+            setActiveMenuButton(mobileInfoBtn);
+        }
+
+        // Função para fazer login do usuário
+        function loginUser() {
+            const userNameInput = document.getElementById('user-name');
+            const userName = userNameInput.value.trim();
+            const userNameError = document.getElementById('user-name-error');
+
+            // Validação
+            if (!userName) {
+                userNameError.style.display = 'block';
+                userNameInput.focus();
+                return;
+            }
+
+            userNameError.style.display = 'none';
+            currentUser = userName;
+            currentUserSpan.textContent = currentUser;
+
+            // Salvar usuário atual
+            localStorage.setItem('currentUser', currentUser);
+
+            // Carregar histórico do usuário
+            loadUserHistory(currentUser);
+
+            // Limpar campo
+            userNameInput.value = '';
+
+            // Mostrar mensagem de sucesso
+            showSuccessMessage(`Bem-vindo, ${currentUser}! Histórico carregado.`);
+
+            // Fechar teclado virtual no mobile
+            userNameInput.blur();
+        }
+
+        // Função para salvar um novo pedido
+        function saveRequest(e) {
+            e.preventDefault();
+
+            // Verificar se há usuário logado
+            if (!currentUser) {
+                showSuccessMessage('Identifique-se primeiro!', true);
+                return;
+            }
+
+            // Obter valores do formulário
+            const houseNumber = document.getElementById('house-number').value.trim();
+            const houseOwner = document.getElementById('house-owner').value.trim();
+            const requestDetails = document.getElementById('request-details').value.trim();
+
+            // Elementos de erro
+            const houseNumberError = document.getElementById('house-number-error');
+            const houseOwnerError = document.getElementById('house-owner-error');
+            const requestDetailsError = document.getElementById('request-details-error');
+
+            // Validação
+            let isValid = true;
+
+            if (!houseNumber) {
+                houseNumberError.style.display = 'block';
+                isValid = false;
+            } else {
+                houseNumberError.style.display = 'none';
+            }
+
+            if (!houseOwner) {
+                houseOwnerError.style.display = 'block';
+                isValid = false;
+            } else {
+                houseOwnerError.style.display = 'none';
+            }
+
+            if (!requestDetails) {
+                requestDetailsError.style.display = 'block';
+                isValid = false;
+            } else {
+                requestDetailsError.style.display = 'none';
+            }
+
+            if (!isValid) return;
+
+            // Criar objeto do pedido
+            const request = {
+                id: Date.now(),
+                houseNumber: houseNumber,
+                houseOwner: houseOwner,
+                requestDetails: requestDetails,
+                date: new Date().toLocaleDateString('pt-BR'),
+                time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+                user: currentUser
+            };
+
+            // Adicionar ao histórico do usuário
+            if (!requests[currentUser]) {
+                requests[currentUser] = [];
+            }
+
+            requests[currentUser].unshift(request);
+            localStorage.setItem('userRequests', JSON.stringify(requests));
+
+            // Limpar formulário
+            requestForm.reset();
+
+            // Atualizar exibição do histórico
+            loadUserHistory(currentUser);
+
+            // Mostrar mensagem de sucesso
+            showSuccessMessage('Pedido salvo com sucesso!');
+
+            // Rolar para o histórico no mobile
+            if (window.innerWidth <= 768) {
+                setTimeout(() => {
+                    scrollToSection('history-section');
+                    setActiveMenuButton(document.querySelector('.mobile-menu-btn[data-target="history-section"]'));
+                }, 500);
+            }
+        }
+
+        // Função para carregar o histórico do usuário
+        function loadUserHistory(user) {
+            historyList.innerHTML = '';
+
+            if (!requests[user] || requests[user].length === 0) {
+                emptyHistory.style.display = 'block';
+                historyActions.style.display = 'none';
+                return;
+            }
+
+            emptyHistory.style.display = 'none';
+            historyActions.style.display = 'flex';
+
+            requests[user].forEach(request => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div class="history-header">
+                        <div>
+                            <span class="house-info">Casa ${request.houseNumber}</span>
+                            <span class="owner-info"> - ${request.houseOwner}</span>
+                        </div>
+                        <div class="history-date">${request.date} às ${request.time}</div>
+                    </div>
+                    <div class="history-content">
+                        <p>${request.requestDetails}</p>
+                    </div>
+                `;
+
+                historyList.appendChild(historyItem);
+            });
+        }
+
+        // Função para limpar o histórico do usuário atual
+        function clearHistory() {
+            if (!currentUser) return;
+
+            if (confirm(`Limpar todo o histórico de ${currentUser}?`)) {
+                delete requests[currentUser];
+                localStorage.setItem('userRequests', JSON.stringify(requests));
+                loadUserHistory(currentUser);
+                showSuccessMessage('Histórico limpo!');
+            }
+        }
+
+        // Função para mostrar mensagens
+        function showSuccessMessage(message, isError = false) {
+            successMessage.textContent = message;
+            successMessage.style.backgroundColor = isError ? '#f8d7da' : '#d4edda';
+            successMessage.style.color = isError ? '#721c24' : '#155724';
+            successMessage.style.display = 'block';
+
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 4000);
+        }
+
+        // Função para instalar como PWA
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('Usuário aceitou a instalação');
+                        installPrompt.style.display = 'none';
+                    } else {
+                        console.log('Usuário recusou a instalação');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+
+        // Detectar tecla Enter para melhor UX em mobile
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                const activeElement = document.activeElement;
+
+                if (activeElement.id === 'user-name') {
+                    e.preventDefault();
+                    loginUser();
+                }
+            }
         });
     </script>
-
-
 </body>
 
 </html>

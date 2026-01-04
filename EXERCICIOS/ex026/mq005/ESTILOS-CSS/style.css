@@ -1,0 +1,27 @@
+@charset "UTF-8";
+
+/* RESET GLOBAL */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* VARIÁVEIS GLOBAIS */
+:root {
+    --cor-primaria: #4f46e5;
+    --cor-secundaria: #111;
+    --cor-bg: #f9f9f9;
+    --cor-card: #ffffff;
+
+    --max-width: 1200px;
+}
+
+/* BASE DO SITE */
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--cor-secundaria);
+    background-color: var(--cor-bg);
+    line-height: 1.6;
+}
