@@ -1,933 +1,719 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gestão de Pedidos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orientation Magic | Media Queries</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap"
+        rel="stylesheet">
     <style>
-        /* Estilos anteriores mantidos... */
+        /* ===== VARIÁVEIS GLOBAIS ===== */
         :root {
-            --primary-color: #4a6fa5;
-            --secondary-color: #166088;
-            --accent-color: #4fc3a1;
-            --light-color: #f8f9fa;
-            --dark-color: #343a40;
-            --gray-color: #e9ecef;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --border-radius: 8px;
+            /* Cores Portrait */
+            --portrait-primary: #3b82f6;
+            --portrait-secondary: #1d4ed8;
+            --portrait-accent: #60a5fa;
+            --portrait-bg: #eff6ff;
+            --portrait-text: #1e3a8a;
+
+            /* Cores Landscape */
+            --landscape-primary: #10b981;
+            --landscape-secondary: #047857;
+            --landscape-accent: #34d399;
+            --landscape-bg: #ecfdf5;
+            --landscape-text: #064e3b;
+
+            /* Cores neutras */
+            --white: #ffffff;
+            --gray-100: #f3f4f6;
+            --gray-800: #1f2937;
+
+            /* Efeitos */
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.2);
+            --radius: 16px;
+            --transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* ===== RESET E BASE ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: #f5f7fa;
-            color: var(--dark-color);
-            line-height: 1.6;
-            padding: 15px;
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
-            padding-bottom: 80px;
-            /* Espaço para o menu mobile */
-        }
-
-        /* Melhorias específicas para mobile */
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
-                padding-bottom: 70px;
-            }
-
-            .container {
-                padding: 0 5px;
-            }
-
-            .card {
-                padding: 20px 15px;
-                margin-bottom: 15px;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-            }
-
-            .btn {
-                width: 100%;
-                padding: 15px;
-                font-size: 1.1rem;
-            }
-
-            input,
-            textarea {
-                font-size: 16px;
-                /* Evita zoom automático no iOS */
-                padding: 15px;
-            }
-
-            .history-item {
-                padding: 15px;
-            }
-
-            .history-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 5px;
-            }
-        }
-
-        /* Menu flutuante para mobile */
-        .mobile-menu {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            padding: 10px 0;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-
-        .mobile-menu-content {
-            display: flex;
-            justify-content: space-around;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .mobile-menu-btn {
+            transition: var(--transition);
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 8px 15px;
-            background: none;
-            border: none;
-            color: var(--dark-color);
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: color 0.3s;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
         }
 
-        .mobile-menu-btn i {
-            font-size: 1.2rem;
-            margin-bottom: 5px;
-            color: var(--primary-color);
-        }
-
-        .mobile-menu-btn.active {
-            color: var(--accent-color);
-        }
-
-        .mobile-menu-btn.active i {
-            color: var(--accent-color);
-        }
-
-        @media (max-width: 768px) {
-            .mobile-menu {
-                display: block;
-            }
-
-            .desktop-only {
-                display: none;
-            }
-        }
-
-        /* Animações para mobile */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .card {
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        /* Melhorias de toque */
-        .btn,
-        .mobile-menu-btn,
-        .clear-btn {
-            transition: all 0.2s;
-            user-select: none;
-        }
-
-        .btn:active,
-        .mobile-menu-btn:active,
-        .clear-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* Scroll suave */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Mensagem de instalação PWA */
-        .install-prompt {
-            position: fixed;
-            bottom: 70px;
-            left: 10px;
-            right: 10px;
-            background: var(--primary-color);
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            display: none;
-            z-index: 999;
-            animation: slideUp 0.3s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(100px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .install-prompt-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .install-btn {
-            background: white;
-            color: var(--primary-color);
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close-install {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        /* Resto dos estilos anteriores mantidos... */
+        /* ===== CONTAINER PRINCIPAL ===== */
         .container {
-            max-width: 1000px;
-            margin: 0 auto;
+            max-width: 1200px;
+            width: 100%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
         }
 
-        header {
+        /* ===== HEADER ===== */
+        .header {
             text-align: center;
             margin-bottom: 20px;
-            padding: 15px;
-            background-color: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
         }
 
-        h1 {
-            color: var(--primary-color);
-            margin-bottom: 10px;
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .logo-icon {
+            font-size: 3rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .logo h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--portrait-primary), var(--landscape-primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .subtitle {
-            color: #666;
-            font-size: 1rem;
+            font-size: 1.2rem;
+            color: var(--gray-800);
+            opacity: 0.8;
+            font-weight: 500;
         }
 
-        .app-container {
+        /* ===== CARD PRINCIPAL ===== */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 50px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: var(--shadow-xl);
+            text-align: center;
+            border: 2px solid transparent;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--portrait-primary), var(--landscape-primary));
+            z-index: 1;
+        }
+
+        .card-content h2 {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+
+        .card-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--gray-800);
+            margin-bottom: 30px;
+        }
+
+        /* ===== INDICADOR DE ORIENTAÇÃO ===== */
+        .orientation-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .orientation-box {
+            width: 200px;
+            height: 300px;
+            border-radius: var(--radius);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .orientation-box:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .orientation-box.portrait {
+            background: linear-gradient(135deg, var(--portrait-bg), var(--white));
+            border: 3px solid var(--portrait-primary);
+        }
+
+        .orientation-box.landscape {
+            background: linear-gradient(135deg, var(--landscape-bg), var(--white));
+            border: 3px solid var(--landscape-primary);
+            width: 300px;
+            height: 200px;
+        }
+
+        .orientation-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            transition: var(--transition);
+        }
+
+        .portrait .orientation-icon {
+            color: var(--portrait-primary);
+        }
+
+        .landscape .orientation-icon {
+            color: var(--landscape-primary);
+        }
+
+        .orientation-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .portrait .orientation-title {
+            color: var(--portrait-text);
+        }
+
+        .landscape .orientation-title {
+            color: var(--landscape-text);
+        }
+
+        .orientation-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-align: center;
+        }
+
+        /* ===== INFO BOX ===== */
+        .info-box {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1000px;
+            margin-top: 20px;
         }
 
-        @media (max-width: 768px) {
-            .app-container {
-                grid-template-columns: 1fr;
-                gap: 15px;
+        .info-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            text-align: left;
+            border-left: 5px solid;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .info-card.portrait-info {
+            border-left-color: var(--portrait-primary);
+        }
+
+        .info-card.landscape-info {
+            border-left-color: var(--landscape-primary);
+        }
+
+        .info-card.device-info {
+            border-left-color: #8b5cf6;
+        }
+
+        .info-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .portrait-info .info-icon {
+            color: var(--portrait-primary);
+        }
+
+        .landscape-info .info-icon {
+            color: var(--landscape-primary);
+        }
+
+        .device-info .info-icon {
+            color: #8b5cf6;
+        }
+
+        .info-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .info-card p {
+            font-size: 0.95rem;
+            color: var(--gray-800);
+            line-height: 1.6;
+        }
+
+        /* ===== STATUS BAR ===== */
+        .status-bar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1000;
+            transition: var(--transition);
+            animation: slideInRight 0.5s ease;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-text {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            padding: 20px;
+            color: var(--gray-800);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .footer a {
+            color: inherit;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .footer a:hover {
+            color: var(--portrait-primary);
+        }
+
+        /* ===== ANIMAÇÕES ===== */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
             }
         }
 
-        .card-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--gray-color);
-            font-size: 1.2rem;
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
         }
 
-        .card-title i {
-            font-size: 1.3rem;
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
-        .form-group {
-            margin-bottom: 15px;
+        @keyframes slideInUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--secondary-color);
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
-        input,
-        textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            transition: border-color 0.3s;
+        @keyframes rotateDevice {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(90deg);
+            }
         }
 
-        input:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--accent-color);
+        /* ===== ESTILOS PARA PORTRAIT ===== */
+        @media (orientation: portrait) {
+            body {
+                background: linear-gradient(135deg, var(--portrait-bg), #dbeafe);
+                color: var(--portrait-text);
+                animation: fadeIn 0.8s ease;
+            }
+
+            .card {
+                border-color: var(--portrait-primary);
+                animation: slideInUp 0.6s ease;
+            }
+
+            .card-content h2 {
+                color: var(--portrait-primary);
+            }
+
+            .orientation-box.portrait {
+                transform: scale(1.05);
+                box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+            }
+
+            .orientation-box.portrait .orientation-icon {
+                animation: float 2s ease-in-out infinite;
+            }
+
+            .status-bar {
+                border: 2px solid var(--portrait-primary);
+            }
+
+            .status-dot {
+                background: var(--portrait-primary);
+            }
+
+            .status-text {
+                color: var(--portrait-text);
+            }
+
+            .footer {
+                border-top: 2px solid var(--portrait-primary);
+            }
+
+            /* Efeitos especiais */
+            body::before {
+                content: '📱 PORTRAIT MODE';
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                background: var(--portrait-primary);
+                color: white;
+                padding: 10px 20px;
+                border-radius: 50px;
+                font-weight: 700;
+                font-size: 0.9rem;
+                box-shadow: var(--shadow-md);
+                z-index: 999;
+                animation: pulse 2s infinite;
+            }
         }
 
-        textarea {
-            resize: vertical;
-            min-height: 100px;
+        /* ===== ESTILOS PARA LANDSCAPE ===== */
+        @media (orientation: landscape) {
+            body {
+                background: linear-gradient(135deg, var(--landscape-bg), #d1fae5);
+                color: var(--landscape-text);
+                animation: fadeIn 0.8s ease;
+            }
+
+            .card {
+                border-color: var(--landscape-primary);
+                animation: slideInUp 0.6s ease;
+            }
+
+            .card-content h2 {
+                color: var(--landscape-primary);
+            }
+
+            .orientation-box.landscape {
+                transform: scale(1.05);
+                box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
+            }
+
+            .orientation-box.landscape .orientation-icon {
+                animation: float 2s ease-in-out infinite;
+            }
+
+            .status-bar {
+                border: 2px solid var(--landscape-primary);
+            }
+
+            .status-dot {
+                background: var(--landscape-primary);
+            }
+
+            .status-text {
+                color: var(--landscape-text);
+            }
+
+            .footer {
+                border-top: 2px solid var(--landscape-primary);
+            }
+
+            /* Layout otimizado para landscape */
+            .container {
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: flex-start;
+            }
+
+            .header {
+                width: 100%;
+            }
+
+            .card {
+                max-width: 600px;
+            }
+
+            .info-box {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            /* Efeitos especiais */
+            body::before {
+                content: '🖥️ LANDSCAPE MODE';
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                background: var(--landscape-primary);
+                color: white;
+                padding: 10px 20px;
+                border-radius: 50px;
+                font-weight: 700;
+                font-size: 0.9rem;
+                box-shadow: var(--shadow-md);
+                z-index: 999;
+                animation: pulse 2s infinite;
+            }
         }
 
-        .btn {
-            display: inline-block;
-            padding: 12px 20px;
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: background-color 0.3s, transform 0.2s;
+        /* ===== ESTILOS RESPONSIVOS ADICIONAIS ===== */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .card {
+                padding: 30px 20px;
+            }
+
+            .logo h1 {
+                font-size: 2rem;
+            }
+
+            .orientation-indicator {
+                gap: 20px;
+            }
+
+            .orientation-box {
+                width: 150px;
+                height: 225px;
+            }
+
+            .orientation-box.landscape {
+                width: 225px;
+                height: 150px;
+            }
+
+            .status-bar {
+                top: 10px;
+                right: 10px;
+                padding: 10px 15px;
+                font-size: 0.8rem;
+            }
         }
 
-        .btn:hover {
-            background-color: #3db08f;
+        @media (max-width: 480px) {
+            .logo {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+
+            .orientation-indicator {
+                flex-direction: column;
+            }
+
+            .info-box {
+                grid-template-columns: 1fr;
+            }
+
+            body::before {
+                font-size: 0.7rem;
+                padding: 8px 15px;
+                bottom: 10px;
+                left: 10px;
+            }
         }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            padding: 12px;
-            background-color: var(--gray-color);
-            border-radius: var(--border-radius);
-        }
+        /* ===== ESTILOS PARA DARK MODE ===== */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --portrait-bg: #1e3a8a;
+                --portrait-text: #dbeafe;
+                --landscape-bg: #064e3b;
+                --landscape-text: #d1fae5;
+                --white: #1f2937;
+                --gray-800: #f3f4f6;
+            }
 
-        .user-info i {
-            color: var(--primary-color);
-            font-size: 1.2rem;
-        }
+            .card {
+                background: rgba(30, 41, 59, 0.95);
+                color: #f3f4f6;
+            }
 
-        .empty-history {
-            text-align: center;
-            padding: 30px 15px;
-            color: #777;
-        }
+            .info-card {
+                background: #374151;
+                color: #f3f4f6;
+            }
 
-        .empty-history i {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            color: #ccc;
-        }
-
-        .history-item {
-            padding: 15px;
-            margin-bottom: 12px;
-            background-color: var(--light-color);
-            border-radius: var(--border-radius);
-            border-left: 5px solid var(--accent-color);
-        }
-
-        .history-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .house-info {
-            font-weight: 600;
-            color: var(--secondary-color);
-        }
-
-        .owner-info {
-            color: var(--primary-color);
-            font-style: italic;
-        }
-
-        .history-date {
-            color: #777;
-            font-size: 0.85rem;
-        }
-
-        .history-content {
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px dashed #ddd;
-        }
-
-        .error {
-            color: #e74c3c;
-            font-size: 0.85rem;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .success-message {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 12px;
-            border-radius: var(--border-radius);
-            margin-top: 15px;
-            display: none;
-        }
-
-        .history-actions {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 15px;
-        }
-
-        .clear-btn {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: none;
-            padding: 8px 15px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: background-color 0.3s;
-        }
-
-        .clear-btn:hover {
-            background-color: #f1b0b7;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #777;
-            font-size: 0.85rem;
-            padding: 15px;
+            .status-bar {
+                background: rgba(30, 41, 59, 0.95);
+                color: #f3f4f6;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-home"></i> Gestão de Pedidos</h1>
-            <p class="subtitle">Registre e consulte pedidos - Otimizado para mobile</p>
-        </header>
-
-        <div class="app-container">
-            <!-- Formulário de Cadastro -->
-            <div id="form-section">
-                <div class="card">
-                    <h2 class="card-title"><i class="fas fa-edit"></i> Novo Pedido</h2>
-
-                    <div class="user-info">
-                        <i class="fas fa-user"></i>
-                        <div>
-                            <strong>Usuário:</strong>
-                            <span id="current-user">Não identificado</span>
-                        </div>
-                    </div>
-
-                    <form id="request-form">
-                        <div class="form-group">
-                            <label for="house-number"><i class="fas fa-hashtag"></i> Número da Casa</label>
-                            <input type="text" id="house-number" placeholder="Ex: 123, 45A, 102-B">
-                            <div class="error" id="house-number-error">Por favor, insira o número da casa.</div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="house-owner"><i class="fas fa-user-tie"></i> Proprietário</label>
-                            <input type="text" id="house-owner" placeholder="Nome do proprietário">
-                            <div class="error" id="house-owner-error">Por favor, insira o nome do proprietário.</div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="request-details"><i class="fas fa-clipboard-list"></i> Pedido</label>
-                            <textarea id="request-details" placeholder="Descreva o pedido em detalhes..."></textarea>
-                            <div class="error" id="request-details-error">Por favor, descreva o pedido.</div>
-                        </div>
-
-                        <button type="submit" class="btn"><i class="fas fa-save"></i> Salvar Pedido</button>
-                    </form>
-
-                    <div class="success-message" id="success-message">
-                        Pedido salvo com sucesso!
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h2 class="card-title"><i class="fas fa-sign-in-alt"></i> Identificação</h2>
-                    <div class="form-group">
-                        <label for="user-name"><i class="fas fa-id-card"></i> Seu Nome</label>
-                        <input type="text" id="user-name" placeholder="Digite seu nome">
-                        <div class="error" id="user-name-error">Por favor, insira seu nome.</div>
-                    </div>
-                    <button class="btn" id="user-login-btn"><i class="fas fa-sign-in-alt"></i> Acessar
-                        Histórico</button>
-                </div>
-            </div>
-
-            <!-- Histórico de Pedidos -->
-            <div id="history-section">
-                <div class="card">
-                    <h2 class="card-title"><i class="fas fa-history"></i> Histórico de Pedidos</h2>
-
-                    <div id="history-container">
-                        <div class="empty-history" id="empty-history">
-                            <i class="fas fa-clipboard"></i>
-                            <h3>Nenhum pedido registrado</h3>
-                            <p>Faça login e registre seu primeiro pedido</p>
-                        </div>
-
-                        <div id="history-list"></div>
-
-                        <div class="history-actions" id="history-actions" style="display: none;">
-                            <button class="clear-btn" id="clear-history-btn">
-                                <i class="fas fa-trash-alt"></i> Limpar Histórico
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card desktop-only">
-                    <h2 class="card-title"><i class="fas fa-info-circle"></i> Como Funciona</h2>
-                    <ul style="padding-left: 20px;">
-                        <li style="margin-bottom: 10px;">Digite seu nome e clique em "Acessar Histórico"</li>
-                        <li style="margin-bottom: 10px;">Preencha todos os campos do formulário</li>
-                        <li style="margin-bottom: 10px;">Dados são armazenados localmente</li>
-                        <li>Para limpar o histórico, clique em "Limpar Histórico"</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Menu flutuante para mobile -->
-        <div class="mobile-menu">
-            <div class="mobile-menu-content">
-                <button class="mobile-menu-btn active" data-target="form-section">
-                    <i class="fas fa-plus-circle"></i>
-                    <span>Novo Pedido</span>
-                </button>
-                <button class="mobile-menu-btn" data-target="history-section">
-                    <i class="fas fa-history"></i>
-                    <span>Histórico</span>
-                </button>
-                <button class="mobile-menu-btn" id="mobile-user-btn">
-                    <i class="fas fa-user"></i>
-                    <span>Usuário</span>
-                </button>
-                <button class="mobile-menu-btn" id="mobile-info-btn">
-                    <i class="fas fa-info-circle"></i>
-                    <span>Ajuda</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Prompt de instalação PWA -->
-        <div class="install-prompt" id="install-prompt">
-            <div class="install-prompt-content">
-                <div>
-                    <strong>Instalar App</strong>
-                    <p style="font-size: 0.9rem; margin-top: 5px;">Use offline e acesso rápido</p>
-                </div>
-                <div>
-                    <button class="install-btn" id="install-app-btn">Instalar</button>
-                    <button class="close-install" id="close-install-btn">&times;</button>
-                </div>
-            </div>
-        </div>
-
-        <footer>
-            <p>Sistema de Gestão de Pedidos &copy; 2023 - Otimizado para mobile</p>
-        </footer>
+    <div class="status-bar" id="statusBar">
+        <div class="status-dot" id="statusDot"></div>
+        <div class="status-text" id="statusText">Detectando orientação...</div>
     </div>
 
-    <script>
-        // Elementos DOM
-        const requestForm = document.getElementById('request-form');
-        const userLoginBtn = document.getElementById('user-login-btn');
-        const historyList = document.getElementById('history-list');
-        const emptyHistory = document.getElementById('empty-history');
-        const historyActions = document.getElementById('history-actions');
-        const clearHistoryBtn = document.getElementById('clear-history-btn');
-        const currentUserSpan = document.getElementById('current-user');
-        const successMessage = document.getElementById('success-message');
-        const installPrompt = document.getElementById('install-prompt');
-        const installAppBtn = document.getElementById('install-app-btn');
-        const closeInstallBtn = document.getElementById('close-install-btn');
-        const mobileMenuBtns = document.querySelectorAll('.mobile-menu-btn');
-        const mobileUserBtn = document.getElementById('mobile-user-btn');
-        const mobileInfoBtn = document.getElementById('mobile-info-btn');
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-mobile-alt logo-icon"></i>
+                <h1>Orientation Magic</h1>
+            </div>
+            <p class="subtitle">Descubra o poder das Media Queries de orientação</p>
+        </header>
 
-        // Variáveis globais
-        let currentUser = localStorage.getItem('currentUser') || '';
-        let requests = JSON.parse(localStorage.getItem('userRequests') || '{}');
-        let deferredPrompt = null;
+        <main class="card">
+            <div class="card-content">
+                <h2 id="mainTitle">✨ A Magia das Media Queries ✨</h2>
+                <p id="mainText">
+                    Gire seu dispositivo ou redimensione a janela do navegador para testar a mágica das
+                    <strong>Media Queries de Orientação</strong>. O site se adapta automaticamente ao modo
+                    retrato (vertical) ou paisagem (horizontal)!
+                </p>
 
-        // Inicializar a aplicação
-        document.addEventListener('DOMContentLoaded', function () {
-            // Verificar se é mobile
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-            if (isMobile) {
-                console.log('Dispositivo móvel detectado');
-                // Configurar comportamento específico para mobile
-                setupMobileFeatures();
-            }
-
-            // Se já houver um usuário salvo, carregar seus dados
-            if (currentUser) {
-                currentUserSpan.textContent = currentUser;
-                loadUserHistory(currentUser);
-            }
-
-            // Configurar eventos
-            requestForm.addEventListener('submit', saveRequest);
-            userLoginBtn.addEventListener('click', loginUser);
-            clearHistoryBtn.addEventListener('click', clearHistory);
-
-            // Eventos para menu mobile
-            mobileMenuBtns.forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const target = this.getAttribute('data-target');
-                    if (target) {
-                        scrollToSection(target);
-                        setActiveMenuButton(this);
-                    }
-                });
-            });
-
-            mobileUserBtn.addEventListener('click', function () {
-                document.getElementById('user-name').focus();
-                scrollToSection('form-section');
-                setActiveMenuButton(this);
-            });
-
-            mobileInfoBtn.addEventListener('click', showMobileInfo);
-
-            // Eventos para instalação PWA
-            installAppBtn.addEventListener('click', installApp);
-            closeInstallBtn.addEventListener('click', () => {
-                installPrompt.style.display = 'none';
-                localStorage.setItem('installPromptClosed', 'true');
-            });
-
-            // Detectar evento de instalação PWA
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-
-                // Mostrar prompt após 5 segundos (apenas se não foi fechado antes)
-                if (!localStorage.getItem('installPromptClosed')) {
-                    setTimeout(() => {
-                        installPrompt.style.display = 'block';
-                    }, 5000);
-                }
-            });
-
-            // Verificar se já está instalado
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                console.log('Aplicativo já instalado');
-            }
-        });
-
-        // Configurar recursos específicos para mobile
-        function setupMobileFeatures() {
-            // Focar automaticamente no campo do usuário se não estiver logado
-            if (!currentUser) {
-                setTimeout(() => {
-                    const userNameInput = document.getElementById('user-name');
-                    userNameInput.focus();
-                }, 500);
-            }
-
-            // Adicionar comportamento de "pull to refresh" prevenção
-            let touchStartY = 0;
-
-            document.addEventListener('touchstart', e => {
-                touchStartY = e.touches[0].clientY;
-            }, { passive: true });
-
-            document.addEventListener('touchmove', e => {
-                const touchY = e.touches[0].clientY;
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-                // Prevenir pull-to-refresh quando no topo da página
-                if (scrollTop === 0 && touchY > touchStartY) {
-                    e.preventDefault();
-                }
-            }, { passive: false });
-
-            // Melhorar experiência de teclado virtual
-            const inputs = document.querySelectorAll('input, textarea');
-            inputs.forEach(input => {
-                input.addEventListener('focus', function () {
-                    setTimeout(() => {
-                        this.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 300);
-                });
-            });
-        }
-
-        // Função para rolar para uma seção específica
-        function scrollToSection(sectionId) {
-            const section = document.getElementById(sectionId);
-            if (section) {
-                section.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
-        // Função para definir botão ativo no menu mobile
-        function setActiveMenuButton(activeBtn) {
-            mobileMenuBtns.forEach(btn => {
-                btn.classList.remove('active');
-            });
-            activeBtn.classList.add('active');
-        }
-
-        // Função para mostrar informações no mobile
-        function showMobileInfo() {
-            alert('📱 SISTEMA MOBILE\n\n1. Digite seu nome para acessar\n2. Preencha o formulário para registrar pedidos\n3. Veja seu histórico na aba "Histórico"\n\nTodos os dados são salvos localmente no seu dispositivo.');
-            setActiveMenuButton(mobileInfoBtn);
-        }
-
-        // Função para fazer login do usuário
-        function loginUser() {
-            const userNameInput = document.getElementById('user-name');
-            const userName = userNameInput.value.trim();
-            const userNameError = document.getElementById('user-name-error');
-
-            // Validação
-            if (!userName) {
-                userNameError.style.display = 'block';
-                userNameInput.focus();
-                return;
-            }
-
-            userNameError.style.display = 'none';
-            currentUser = userName;
-            currentUserSpan.textContent = currentUser;
-
-            // Salvar usuário atual
-            localStorage.setItem('currentUser', currentUser);
-
-            // Carregar histórico do usuário
-            loadUserHistory(currentUser);
-
-            // Limpar campo
-            userNameInput.value = '';
-
-            // Mostrar mensagem de sucesso
-            showSuccessMessage(`Bem-vindo, ${currentUser}! Histórico carregado.`);
-
-            // Fechar teclado virtual no mobile
-            userNameInput.blur();
-        }
-
-        // Função para salvar um novo pedido
-        function saveRequest(e) {
-            e.preventDefault();
-
-            // Verificar se há usuário logado
-            if (!currentUser) {
-                showSuccessMessage('Identifique-se primeiro!', true);
-                return;
-            }
-
-            // Obter valores do formulário
-            const houseNumber = document.getElementById('house-number').value.trim();
-            const houseOwner = document.getElementById('house-owner').value.trim();
-            const requestDetails = document.getElementById('request-details').value.trim();
-
-            // Elementos de erro
-            const houseNumberError = document.getElementById('house-number-error');
-            const houseOwnerError = document.getElementById('house-owner-error');
-            const requestDetailsError = document.getElementById('request-details-error');
-
-            // Validação
-            let isValid = true;
-
-            if (!houseNumber) {
-                houseNumberError.style.display = 'block';
-                isValid = false;
-            } else {
-                houseNumberError.style.display = 'none';
-            }
-
-            if (!houseOwner) {
-                houseOwnerError.style.display = 'block';
-                isValid = false;
-            } else {
-                houseOwnerError.style.display = 'none';
-            }
-
-            if (!requestDetails) {
-                requestDetailsError.style.display = 'block';
-                isValid = false;
-            } else {
-                requestDetailsError.style.display = 'none';
-            }
-
-            if (!isValid) return;
-
-            // Criar objeto do pedido
-            const request = {
-                id: Date.now(),
-                houseNumber: houseNumber,
-                houseOwner: houseOwner,
-                requestDetails: requestDetails,
-                date: new Date().toLocaleDateString('pt-BR'),
-                time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-                user: currentUser
-            };
-
-            // Adicionar ao histórico do usuário
-            if (!requests[currentUser]) {
-                requests[currentUser] = [];
-            }
-
-            requests[currentUser].unshift(request);
-            localStorage.setItem('userRequests', JSON.stringify(requests));
-
-            // Limpar formulário
-            requestForm.reset();
-
-            // Atualizar exibição do histórico
-            loadUserHistory(currentUser);
-
-            // Mostrar mensagem de sucesso
-            showSuccessMessage('Pedido salvo com sucesso!');
-
-            // Rolar para o histórico no mobile
-            if (window.innerWidth <= 768) {
-                setTimeout(() => {
-                    scrollToSection('history-section');
-                    setActiveMenuButton(document.querySelector('.mobile-menu-btn[data-target="history-section"]'));
-                }, 500);
-            }
-        }
-
-        // Função para carregar o histórico do usuário
-        function loadUserHistory(user) {
-            historyList.innerHTML = '';
-
-            if (!requests[user] || requests[user].length === 0) {
-                emptyHistory.style.display = 'block';
-                historyActions.style.display = 'none';
-                return;
-            }
-
-            emptyHistory.style.display = 'none';
-            historyActions.style.display = 'flex';
-
-            requests[user].forEach(request => {
-                const historyItem = document.createElement('div');
-                historyItem.className = 'history-item';
-                historyItem.innerHTML = `
-                    <div class="history-header">
-                        <div>
-                            <span class="house-info">Casa ${request.houseNumber}</span>
-                            <span class="owner-info"> - ${request.houseOwner}</span>
-                        </div>
-                        <div class="history-date">${request.date} às ${request.time}</div>
+                <div class="orientation-indicator">
+                    <div class="orientation-box portrait" id="portraitBox">
+                        <i class="fas fa-mobile-alt orientation-icon"></i>
+                        <div class="orientation-title">Portrait</div>
+                        <div class="orientation-desc">Modo Retrato<br>(Vertical)</div>
                     </div>
-                    <div class="history-content">
-                        <p>${request.requestDetails}</p>
+
+                    <div class="orientation-box landscape" id="landscapeBox">
+                        <i class="fas fa-desktop orientation-icon"></i>
+                        <div class="orientation-title">Landscape</div>
+                        <div class="orientation-desc">Modo Paisagem<br>(Horizontal)</div>
                     </div>
-                `;
+                </div>
 
-                historyList.appendChild(historyItem);
-            });
-        }
+                <div class="info-box">
+                    <div class="info-card portrait-info">
+                        <i class="fas fa-arrow-up orientation-icon info-icon"></i>
+                        <h3>Modo Portrait</h3>
+                        <p>Ideal para smartphones e dispositivos móveis. O conteúdo é otimizado para visualização
+                            vertical com rolagem natural.</p>
+                    </div>
 
-        // Função para limpar o histórico do usuário atual
-        function clearHistory() {
-            if (!currentUser) return;
+                    <div class="info-card landscape-info">
+                        <i class="fas fa-arrow-right orientation-icon info-icon"></i>
+                        <h3>Modo Landscape</h3>
+                        <p>Perfeito para tablets, desktops e TVs. Oferece mais espaço horizontal para layouts complexos
+                            e multimídia.</p>
+                    </div>
 
-            if (confirm(`Limpar todo o histórico de ${currentUser}?`)) {
-                delete requests[currentUser];
-                localStorage.setItem('userRequests', JSON.stringify(requests));
-                loadUserHistory(currentUser);
-                showSuccessMessage('Histórico limpo!');
-            }
-        }
+                    <div class="info-card device-info">
+                        <i class="fas fa-info-circle info-icon"></i>
+                        <h3>Informações</h3>
+                        <p><strong>Largura:</strong> <span id="screenWidth">0</span>px<br>
+                            <strong>Altura:</strong> <span id="screenHeight">0</span>px<br>
+                            <strong>Razão:</strong> <span id="aspectRatio">0:0</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 
-        // Função para mostrar mensagens
-        function showSuccessMessage(message, isError = false) {
-            successMessage.textContent = message;
-            successMessage.style.backgroundColor = isError ? '#f8d7da' : '#d4edda';
-            successMessage.style.color = isError ? '#721c24' : '#155724';
-            successMessage.style.display = 'block';
+    <footer class="footer">
+        <p>Orientation Magic &copy; 2023 | Desenvolvido com ❤️ usando Media Queries</p>
+        <p>Tecnologias: HTML5, CSS3, JavaScript</p>
+    </footer>
 
-            setTimeout(() => {
-                successMessage.style.display = 'none';
-            }, 4000);
-        }
 
-        // Função para instalar como PWA
-        function installApp() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('Usuário aceitou a instalação');
-                        installPrompt.style.display = 'none';
-                    } else {
-                        console.log('Usuário recusou a instalação');
-                    }
-                    deferredPrompt = null;
-                });
-            }
-        }
-
-        // Detectar tecla Enter para melhor UX em mobile
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') {
-                const activeElement = document.activeElement;
-
-                if (activeElement.id === 'user-name') {
-                    e.preventDefault();
-                    loginUser();
-                }
-            }
-        });
-    </script>
 </body>
 
 </html>

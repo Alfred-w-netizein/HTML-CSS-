@@ -4,24 +4,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile First</title>
+    <title>Media Queries | Teste de Dispositivos</title>
     <link rel="stylesheet" href="CSS'S/style.css" media="all">
     <link rel="stylesheet" href="CSS'S/media.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
-    <main>
-        <h1>Testando media queries em varios dispositivos</h1>
-        <br>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-laptop-code"></i>
+                <h1>Media Queries Lab</h1>
+            </div>
+            <p class="subtitle">Teste responsivo para diferentes dispositivos</p>
+        </header>
 
-        <p>
-            <img src="CSS'S/img/icon-phone.png" alt="telefone" id="phone">
-            <img src="CSS'S/img/icon-tablet.png" alt="tablet" id="tablet">
-            <img src="CSS'S/img/icon-pc.png" alt="desktop" id="pc">
-            <img src="CSS'S/img/icon-print.png" alt="impressora" id="print">
-            <img src="CSS'S/img/icon-tv.png" alt="Televisão" id="tv">
-        </p>
-    </main>
+        <main>
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-mobile-alt"></i> Dispositivo Ativo</h2>
+                    <div class="device-indicator" id="device-indicator">
+                        <span class="device-name">Telefone</span>
+                        <span class="device-resolution">≤ 767px</span>
+                    </div>
+                </div>
+
+                <div class="device-icons">
+                    <div class="device-icon active" data-device="phone">
+                        <div class="icon-wrapper">
+                            <img src="CSS'S/img/icon-phone.png" alt="Telefone">
+                        </div>
+                        <span class="device-label">Phone</span>
+                        <span class="resolution">≤ 767px</span>
+                    </div>
+
+                    <div class="device-icon" data-device="tablet">
+                        <div class="icon-wrapper">
+                            <img src="CSS'S/img/icon-tablet.png" alt="Tablet">
+                        </div>
+                        <span class="device-label">Tablet</span>
+                        <span class="resolution">768px - 992px</span>
+                    </div>
+
+                    <div class="device-icon" data-device="pc">
+                        <div class="icon-wrapper">
+                            <img src="CSS'S/img/icon-pc.png" alt="Desktop">
+                        </div>
+                        <span class="device-label">Desktop</span>
+                        <span class="resolution">993px - 1200px</span>
+                    </div>
+
+                    <div class="device-icon" data-device="tv">
+                        <div class="icon-wrapper">
+                            <img src="CSS'S/img/icon-tv.png" alt="TV">
+                        </div>
+                        <span class="device-label">TV</span>
+                        <span class="resolution">≥ 1201px</span>
+                    </div>
+
+                    <div class="device-icon" data-device="print">
+                        <div class="icon-wrapper">
+                            <img src="CSS'S/img/icon-print.png" alt="Impressora">
+                        </div>
+                        <span class="device-label">Print</span>
+                        <span class="resolution">Modo Impressão</span>
+                    </div>
+                </div>
+
+                <div class="device-info">
+                    <h3><i class="fas fa-info-circle"></i> Informações do Dispositivo</h3>
+                    <div class="info-content">
+                        <div class="info-item">
+                            <span class="info-label">Largura da Tela:</span>
+                            <span class="info-value" id="screen-width">Carregando...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Altura da Tela:</span>
+                            <span class="info-value" id="screen-height">Carregando...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Pixel Ratio:</span>
+                            <span class="info-value" id="pixel-ratio">Carregando...</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Orientação:</span>
+                            <span class="info-value" id="orientation">Carregando...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="features">
+                    <h3><i class="fas fa-star"></i> Recursos Demonstrativos</h3>
+                    <div class="features-grid">
+                        <div class="feature">
+                            <i class="fas fa-palette"></i>
+                            <h4>Design Responsivo</h4>
+                            <p>Adaptação automática a diferentes tamanhos de tela</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-bolt"></i>
+                            <h4>Performance Otimizada</h4>
+                            <p>Carregamento rápido em todos os dispositivos</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-eye"></i>
+                            <h4>UI Moderna</h4>
+                            <p>Interface limpa e profissional</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-code"></i>
+                            <h4>Código Limpo</h4>
+                            <p>Estrutura organizada e semântica</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Media Queries Lab &copy; 2023 - Desenvolvido para testes responsivos</p>
+            <div class="footer-links">
+                <a href="#"><i class="fab fa-github"></i> GitHub</a>
+                <a href="#"><i class="fas fa-book"></i> Documentação</a>
+                <a href="#"><i class="fas fa-code"></i> Exemplos</a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="CSS'S/script.js"></script>
 </body>
 
 </html>

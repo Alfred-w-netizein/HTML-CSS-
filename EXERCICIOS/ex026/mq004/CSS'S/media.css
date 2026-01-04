@@ -1,68 +1,284 @@
 @charset "UTF-8";
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-
+/* ===== MEDIA QUERY PARA TABLET ===== */
 @media screen and (min-width: 768px) and (max-width: 992px) {
     body {
-        background-image: url('img/back-tablet.jpg');
-
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+        animation: fadeIn 0.5s ease;
     }
 
-    img#phone {
-        display: none;
+    body::after {
+        content: '📱 Modo Tablet Ativo';
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        color: #f5576c;
+        box-shadow: var(--shadow-md);
+        z-index: 1000;
+        animation: float 3s ease-in-out infinite;
     }
 
-    img#tablet {
-        display: block;
+    /* Ajustes específicos para tablet */
+    .container {
+        max-width: 95%;
     }
 
+    .device-icon[data-device="tablet"] {
+        transform: scale(1.05);
+        border-color: #f5576c;
+        box-shadow: 0 0 20px rgba(245, 87, 108, 0.3);
+    }
 
+    .device-icon[data-device="tablet"]::before {
+        background: linear-gradient(135deg, #f093fb, #f5576c);
+    }
+
+    .device-indicator {
+        background: linear-gradient(135deg, #f093fb, #f5576c);
+    }
 }
 
+/* ===== MEDIA QUERY PARA DESKTOP ===== */
 @media screen and (min-width: 993px) and (max-width: 1200px) {
     body {
-        background-image: url('img/back-pc.jpg');
-
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+        animation: fadeIn 0.5s ease;
     }
 
-    img#phone {
-        display: none;
+    body::after {
+        content: '💻 Modo Desktop Ativo';
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        color: #4facfe;
+        box-shadow: var(--shadow-md);
+        z-index: 1000;
+        animation: float 3s ease-in-out infinite;
     }
 
-    img#tablet {
-        display: none;
+    /* Ajustes específicos para desktop */
+    .container {
+        max-width: 1100px;
     }
 
-    img#pc {
-        display: block;
+    .device-icons {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .device-icon[data-device="pc"] {
+        transform: scale(1.05);
+        border-color: #4facfe;
+        box-shadow: 0 0 20px rgba(79, 172, 254, 0.3);
+        grid-column: span 3;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .device-icon[data-device="pc"]::before {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+    }
+
+    .device-indicator {
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
     }
 }
 
+/* ===== MEDIA QUERY PARA TV/GRANDES TELAS ===== */
 @media screen and (min-width: 1201px) {
     body {
-        background-image: url('img/back-tv.jpg');
-
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%) !important;
+        animation: fadeIn 0.5s ease;
     }
 
-    img#phone {
+    body::after {
+        content: '📺 Modo TV/Grande Tela Ativo';
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        color: #43e97b;
+        box-shadow: var(--shadow-md);
+        z-index: 1000;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    /* Ajustes específicos para grandes telas */
+    .container {
+        max-width: 1400px;
+    }
+
+    .card {
+        padding: 50px;
+    }
+
+    .device-icons {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 30px;
+    }
+
+    .device-icon[data-device="tv"] {
+        transform: scale(1.1);
+        border-color: #43e97b;
+        box-shadow: 0 0 25px rgba(67, 233, 123, 0.4);
+    }
+
+    .device-icon[data-device="tv"]::before {
+        background: linear-gradient(135deg, #43e97b, #38f9d7);
+    }
+
+    .device-indicator {
+        background: linear-gradient(135deg, #43e97b, #38f9d7);
+    }
+
+    .features-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* ===== MEDIA QUERY PARA IMPRESSÃO ===== */
+@media print {
+    body {
+        background: white !important;
+        color: black !important;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 100%;
+        margin: 0;
+    }
+
+    .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        padding: 20px;
+    }
+
+    .device-icons {
         display: none;
     }
 
-    img#tablet {
+    .features-grid {
         display: none;
     }
 
-    img#pc {
+    footer {
         display: none;
     }
 
-    img#tv {
+    .device-info {
+        page-break-inside: avoid;
+    }
+
+    body::after {
+        content: '🖨️ Modo de Impressão';
         display: block;
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #666;
+    }
+}
+
+/* ===== MEDIA QUERY PARA MOBILE PEQUENO ===== */
+@media screen and (max-width: 360px) {
+    .logo h1 {
+        font-size: 1.2rem;
+    }
+
+    .subtitle {
+        font-size: 0.9rem;
+    }
+
+    .card-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .device-label {
+        font-size: 1rem;
+    }
+
+    .resolution {
+        font-size: 0.8rem;
+    }
+}
+
+/* ===== MEDIA QUERY PARA ORIENTAÇÃO LANDSCAPE ===== */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        min-height: auto;
+    }
+
+    .device-icons {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .device-icon {
+        padding: 15px 10px;
+    }
+
+    .icon-wrapper {
+        width: 50px;
+        height: 50px;
+    }
+
+    .device-icon img {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* ===== MEDIA QUERY PARA DARK MODE ===== */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --dark-color: #f8fafc;
+        --light-color: #1e293b;
+        --gray-light: #334155;
+    }
+
+    body {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    }
+
+    .card,
+    header,
+    footer {
+        background: rgba(30, 41, 59, 0.95);
+        color: #f8fafc;
+    }
+
+    .device-icon {
+        background: #334155;
+        color: #f8fafc;
+    }
+
+    .icon-wrapper {
+        background: linear-gradient(135deg, #475569, #334155);
+    }
+
+    .info-item {
+        background: #334155;
+    }
+
+    .feature {
+        background: #334155;
+        color: #f8fafc;
     }
 }

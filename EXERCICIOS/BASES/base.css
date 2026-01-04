@@ -206,4 +206,41 @@ iframe {
     height: 600px;
     border-radius: 30px;
     border: none;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    display: flex;
+    justify-content: center;
+    /* eixo horizontal */
+    align-items: center;
+    /* eixo vertical */
+    flex-direction: column;
 }
