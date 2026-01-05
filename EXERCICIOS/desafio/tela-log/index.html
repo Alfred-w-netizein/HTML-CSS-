@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="estilos/css.css" media="all">
+</head>
+
+<body>
+    <main>
+        <div class="bambu">
+
+            <div class="contain">
+                <!-- Adicionei ID à imagem -->
+                <img id="imagemLogin" src="IMGS/olhando-removebg-preview.png" alt="">
+
+                <img src="IMGS/bambu.png" alt="" class="bambu">
+
+
+                <form action="#" method="post">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+
+                    <label for="ipassword">Senha</label>
+                    <input type="password" id="ipassword" name="password" placeholder="Senha" required>
+                    <button>Entrar</button>
+                </form>
+            </div>
+
+        </div>
+    </main>
+
+
+    <script>
+        // Nomes exatos das suas imagens
+        const IMAGEM_NORMAL = 'IMGS/olhando-removebg-preview.png';
+        const IMAGEM_SENHA = 'IMGS/sem-olhar-removebg-preview (1).png';
+
+        // Esperar página carregar
+        window.addEventListener('load', function () {
+            const senha = document.getElementById('ipassword');
+            const imagem = document.getElementById('imagemLogin');
+
+            // Quando clicar no campo de senha
+            senha.addEventListener('focus', function () {
+                imagem.src = IMAGEM_SENHA;  // Troca para segunda imagem
+            });
+
+            // Quando sair do campo de senha
+            senha.addEventListener('blur', function () {
+                if (senha.value === '') {
+                    imagem.src = IMAGEM_NORMAL;  // Volta para primeira imagem
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
