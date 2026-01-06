@@ -24,14 +24,24 @@ body {
     height: 100vh;
     width: 100vw;
     overflow: hidden;
+
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+
+}
+
+div.main-inner {
+    transform: 0.8s ease;
+
 }
 
 main {
+
     border: 1px solid #111;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: relative;
     width: 300px;
     height: 360px;
     border-radius: 30px;
@@ -40,6 +50,8 @@ main {
 }
 
 img {
+
+
     position: absolute;
     top: -66px;
     left: 50%;
@@ -59,6 +71,8 @@ img.bambu {
 }
 
 div.contain {
+
+
     border: 1px solid #111;
     position: absolute;
     top: 64%;

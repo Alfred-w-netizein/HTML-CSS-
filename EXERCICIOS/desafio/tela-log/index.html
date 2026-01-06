@@ -6,31 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="estilos/css.css" media="all">
+    <link rel="stylesheet" href="estilos/media.css">
 </head>
 
 <body>
-    <main>
-        <div class="bambu">
-
-            <div class="contain">
-                <!-- Adicionei ID à imagem -->
-                <img id="imagemLogin" src="IMGS/olhando-removebg-preview.png" alt="">
-
-                <img src="IMGS/bambu.png" alt="" class="bambu">
-
-
-                <form action="#" method="post">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="seu@email.com" required>
-
-                    <label for="ipassword">Senha</label>
-                    <input type="password" id="ipassword" name="password" placeholder="Senha" required>
-                    <button>Entrar</button>
-                </form>
+    <div class="main-inner">
+        <main>
+            <div class="bambu">
+                <div class="contain">
+                    <!-- Adicionei ID à imagem -->
+                    <img id="imagemLogin" src="IMGS/olhando-removebg-preview.png" alt="">
+                    <img src="IMGS/bambu.png" alt="" class="bambu">
+                    <form action="#" method="post">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                        <label for="ipassword">Senha</label>
+                        <input type="password" id="ipassword" name="password" placeholder="Senha" required>
+                        <button>Entrar</button>
+                    </form>
+                </div>
             </div>
-
-        </div>
-    </main>
+        </main>
+    </div>
 
 
     <script>
@@ -56,6 +53,20 @@
             });
         });
     </script>
+    <script>
+        window.addEventListener('resize', () => {
+            const inner = document.querySelector('.main-inner');
+
+            inner.style.transform = 'scale(0.97)';
+
+            clearTimeout(window._resizeTimeout);
+            window._resizeTimeout = setTimeout(() => {
+                inner.style.transform = 'scale(1)';
+            }, 120);
+        });
+
+    </script>
+
 </body>
 
 </html>
