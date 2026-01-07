@@ -68,6 +68,8 @@ img.bambu {
     width: 200px;
     height: 350px;
     z-index: -1;
+
+
 }
 
 div.contain {
@@ -83,6 +85,7 @@ div.contain {
     border-radius: 30px;
     background-color: var(--cor-card);
 
+    transition: width 1s, height 1s;
 }
 
 form {
@@ -95,4 +98,6 @@ form {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
+    transition: width 0.7s, height 0.7s;
 }
