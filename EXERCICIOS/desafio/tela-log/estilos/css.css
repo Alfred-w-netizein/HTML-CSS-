@@ -88,16 +88,56 @@ div.contain {
     transition: width 1s, height 1s;
 }
 
-form {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 170px;
-    height: 170px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+form label {
+    position: relative;
+    top: 20px;
+    left: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 4px;
+}
 
-    transition: width 0.7s, height 0.7s;
+form input {
+    position: relative;
+    top: 20px;
+    left: 10px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1.5px solid #ddd;
+    outline: none;
+    font-size: 0.9rem;
+    transition: all 0.25s ease;
+    background-color: #f9f9f9;
+}
+
+form input:focus {
+    border-color: var(--cor-primaria);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+form button {
+    position: relative;
+    top: 30px;
+    left: 20px;
+    padding: 12px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, #4f46e5, #4338ca);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+}
+
+form button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
 }
