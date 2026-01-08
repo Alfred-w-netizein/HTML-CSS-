@@ -85,7 +85,7 @@ div.contain {
     border-radius: 30px;
     background-color: var(--cor-card);
 
-    transition: width 1s, height 1s;
+    transition: width 0.5s, height 0.7s;
 }
 
 form label {
@@ -96,6 +96,7 @@ form label {
     font-weight: 600;
     color: #444;
     margin-bottom: 4px;
+    transition: width 0.5s, height 0.7s;
 }
 
 form input {
@@ -109,6 +110,7 @@ form input {
     font-size: 0.9rem;
     transition: all 0.25s ease;
     background-color: #f9f9f9;
+    transition: width 0.5s, height 0.7s;
 }
 
 form input:focus {
@@ -130,6 +132,7 @@ form button {
     font-size: 0.95rem;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: width 0.5s, height 0.7s;
 }
 
 form button:hover {
