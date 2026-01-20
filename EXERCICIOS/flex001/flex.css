@@ -1,0 +1,53 @@
+@charset "UTF-8";
+
+/* RESET GLOBAL */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* VARIÁVEIS  */
+:root {
+    --cor-primaria: #4f46e5;
+    --cor-secundaria: #ffffff;
+    --cor-bg: #000333;
+    --cor-card: rgb(255, 123, 0);
+    --cor-card2: rgb(31, 42, 255);
+    --max-width: 1200px;
+}
+
+/* BASE DO SITE */
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--cor-secundaria);
+    background-color: var(--cor-bg);
+    line-height: 1.6;
+    text-align: center;
+}
+
+div.container {
+    background-color: var(--cor-card);
+    margin: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px;
+    box-shadow: 10px 10px 0px rgb(0, 0, 0);
+    width: 80vw;
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+div.item {
+    background-color: var(--cor-card2);
+    padding: 20px;
+    margin: 10px;
+    border: 2px solid black;
+    box-shadow: 5px 5px 0px rgb(0, 0, 0);
+
+    flex: auto;
+
+}
