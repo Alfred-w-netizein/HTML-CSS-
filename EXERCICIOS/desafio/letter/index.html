@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Letter</title>
+  <style>
+    @charset "UTF-8";
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --cor-primaria: #4f46e5;
+      --cor-secundaria: #111;
+      --cor-bg: #f9f9f9;
+      --cor-card: #ffffff;
+      --max-width: 1200px;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #254336;
+      background-image: radial-gradient(at 54% 20%, #254336 0%, transparent 60%),
+        radial-gradient(at 59% 72%, #6b8a7a 0%, transparent 50%),
+        radial-gradient(at 3% 7%, #b7b597 0%, transparent 40%),
+        radial-gradient(at 89% 92%, #dad3be 0%, transparent 30%);
+      color: var(--cor-secundaria);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    main {
+      position: relative;
+      width: 360px;
+      height: 320px;
+      display: grid;
+      place-items: center;
+    }
+
+    div.paper {
+
+      position: absolute;
+      width: 250px;
+      height: 200px;
+      background-color: var(--cor-card);
+      box-shadow: 0 4px 8px rgb(0, 0, 0);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 3;
+      transform: translateY(0);
+      transition: transform 0.55s cubic-bezier(.2, .9, .2, 1);
+    }
+
+    div.envelope {
+      position: absolute;
+      width: 320px;
+      height: 230px;
+      background-color: var(--cor-card);
+      box-shadow: 0 4px 8px rgb(0, 0, 0);
+      border-radius: 12px;
+      z-index: 3;
+    }
+
+    form label {
+      padding: 10px;
+      position: relative;
+      top: 20px;
+      left: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 4px;
+      transition: width 0.5s, height 0.7s;
+    }
+
+    form input {
+      position: relative;
+      top: 20px;
+      left: 0;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1.5px solid #ddd;
+      outline: none;
+      font-size: 0.9rem;
+      transition: all 0.25s ease;
+      background-color: #f9f9f9;
+      transition: width 0.5s, height 0.7s;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <div class="paper" id="paper">
+      <form class="contain" action="#" method="get">
+        <div class="email">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+        </div>
+        <div class="senha">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" name="senha" placeholder="Senha" required>
+        </div>
+      </form>
+    </div>
+
+   
+  </main>
+
+
+</body>
+
+</html>

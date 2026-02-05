@@ -19,7 +19,8 @@
 }
 
 body {
-    background-color: var(--cor-bg);
+    background-color: #294b29;
+background-image: radial-gradient(at 80% 37%, #294b29 0%, transparent 60%), radial-gradient(at 69% 23%, #50623a 0%, transparent 50%), radial-gradient(at 26% 39%, #789461 0%, transparent 40%), radial-gradient(at 89% 25%, #dbe7c9 0%, transparent 30%);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     height: 100vh;
     width: 100vw;
@@ -46,7 +47,7 @@ main {
     height: 360px;
     border-radius: 30px;
     border: none;
-    background-color: var(--cor-bg);
+ 
 }
 
 img {
